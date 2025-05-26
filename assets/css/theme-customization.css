@@ -1,0 +1,356 @@
+/* 
+ * EduLearn LMS - Theme Customization
+ * Version 1.0
+ * Created: May 25, 2025
+ */
+
+/* Theme Customization - Allows for custom theming without modifying core CSS */
+
+/* Theme Presets */
+:root {
+	/* Default Blue Theme */
+	--primary-color: #3498db;
+	--primary-dark: #2980b9;
+	--secondary-color: #2ecc71;
+	--secondary-dark: #27ae60;
+	--accent-color: #f39c12;
+	--text-color: #333;
+	--text-light: #6c757d;
+	--bg-light: #f8f9fa;
+	--bg-dark: #343a40;
+	--danger: #e74c3c;
+	--success: #2ecc71;
+	--warning: #f1c40f;
+	--info: #3498db;
+}
+
+/* Purple Theme */
+.theme-purple {
+	--primary-color: #9b59b6;
+	--primary-dark: #8e44ad;
+	--secondary-color: #3498db;
+	--secondary-dark: #2980b9;
+	--accent-color: #f1c40f;
+}
+
+/* Green Theme */
+.theme-green {
+	--primary-color: #2ecc71;
+	--primary-dark: #27ae60;
+	--secondary-color: #3498db;
+	--secondary-dark: #2980b9;
+	--accent-color: #e67e22;
+}
+
+/* Orange Theme */
+.theme-orange {
+	--primary-color: #e67e22;
+	--primary-dark: #d35400;
+	--secondary-color: #3498db;
+	--secondary-dark: #2980b9;
+	--accent-color: #f1c40f;
+}
+
+/* Red Theme */
+.theme-red {
+	--primary-color: #e74c3c;
+	--primary-dark: #c0392b;
+	--secondary-color: #3498db;
+	--secondary-dark: #2980b9;
+	--accent-color: #f39c12;
+}
+
+/* Teal Theme */
+.theme-teal {
+	--primary-color: #1abc9c;
+	--primary-dark: #16a085;
+	--secondary-color: #3498db;
+	--secondary-dark: #2980b9;
+	--accent-color: #f1c40f;
+}
+
+/* Custom Fonts Option */
+.font-roboto {
+	font-family: "Roboto", sans-serif;
+}
+
+.font-montserrat {
+	font-family: "Montserrat", sans-serif;
+}
+
+.font-lato {
+	font-family: "Lato", sans-serif;
+}
+
+.font-open-sans {
+	font-family: "Open Sans", sans-serif;
+}
+
+/* Border Radius Options */
+.border-rounded-sm {
+	--border-radius: 0.25rem;
+}
+
+.border-rounded-md {
+	--border-radius: 0.5rem;
+}
+
+.border-rounded-lg {
+	--border-radius: 0.75rem;
+}
+
+.border-rounded-xl {
+	--border-radius: 1rem;
+}
+
+/* Custom Card Styles */
+.card-style-flat .card {
+	box-shadow: none;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.card-style-rounded .card {
+	border-radius: calc(var(--border-radius) * 2);
+}
+
+.card-style-elevated .card {
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	border: none;
+}
+
+/* Button Style Options */
+.btn-style-rounded .btn {
+	border-radius: 50px;
+}
+
+.btn-style-square .btn {
+	border-radius: 0;
+}
+
+.btn-style-3d .btn-primary,
+.btn-style-3d .btn-secondary,
+.btn-style-3d .btn-success,
+.btn-style-3d .btn-danger,
+.btn-style-3d .btn-warning,
+.btn-style-3d .btn-info {
+	border-bottom-width: 4px;
+	transform: translateY(-2px);
+	margin-bottom: 2px;
+}
+
+.btn-style-3d .btn-primary:active,
+.btn-style-3d .btn-secondary:active,
+.btn-style-3d .btn-success:active,
+.btn-style-3d .btn-danger:active,
+.btn-style-3d .btn-warning:active,
+.btn-style-3d .btn-info:active {
+	transform: translateY(0);
+	margin-bottom: 0;
+	border-bottom-width: 2px;
+}
+
+/* Gradients */
+.gradient-primary {
+	background: linear-gradient(
+		135deg,
+		var(--primary-color),
+		var(--primary-dark)
+	);
+}
+
+.gradient-secondary {
+	background: linear-gradient(
+		135deg,
+		var(--secondary-color),
+		var(--secondary-dark)
+	);
+}
+
+.gradient-accent {
+	background: linear-gradient(135deg, var(--accent-color), var(--warning));
+}
+
+.gradient-primary-secondary {
+	background: linear-gradient(
+		135deg,
+		var(--primary-color),
+		var(--secondary-color)
+	);
+}
+
+/* Text Size Options */
+.text-size-sm {
+	font-size: 0.9rem;
+}
+
+.text-size-md {
+	font-size: 1rem;
+}
+
+.text-size-lg {
+	font-size: 1.1rem;
+}
+
+.text-size-xl {
+	font-size: 1.2rem;
+}
+
+/* Icon Style Options */
+.icon-style-circle i.fas,
+.icon-style-circle i.far,
+.icon-style-circle i.fab {
+	width: 40px;
+	height: 40px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background-color: rgba(var(--primary-color-rgb), 0.1);
+	color: var(--primary-color);
+}
+
+.icon-style-square i.fas,
+.icon-style-square i.far,
+.icon-style-square i.fab {
+	width: 40px;
+	height: 40px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	background-color: rgba(var(--primary-color-rgb), 0.1);
+	color: var(--primary-color);
+}
+
+/* Helper Classes for Spacing */
+.spacing-sm {
+	--spacer: 0.75;
+}
+
+.spacing-md {
+	--spacer: 1;
+}
+
+.spacing-lg {
+	--spacer: 1.5;
+}
+
+.spacing-xl {
+	--spacer: 2;
+}
+
+/* Applying Spacing to Elements */
+.spacing-sm .card,
+.spacing-sm .form-group,
+.spacing-sm .nav {
+	margin-bottom: calc(var(--spacer) * 1rem);
+}
+
+.spacing-md .card,
+.spacing-md .form-group,
+.spacing-md .nav {
+	margin-bottom: calc(var(--spacer) * 1rem);
+}
+
+.spacing-lg .card,
+.spacing-lg .form-group,
+.spacing-lg .nav {
+	margin-bottom: calc(var(--spacer) * 1rem);
+}
+
+.spacing-xl .card,
+.spacing-xl .form-group,
+.spacing-xl .nav {
+	margin-bottom: calc(var(--spacer) * 1rem);
+}
+
+/* Contrast Modes */
+.high-contrast {
+	--text-color: #000;
+	--text-light: #333;
+	--bg-light: #fff;
+	--bg-dark: #000;
+	--primary-color: #0066cc;
+	--primary-dark: #004c99;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+	/* Adjust for right-to-left languages */
+	text-align: right;
+}
+
+[dir="rtl"] .ml-auto {
+	margin-left: 0 !important;
+	margin-right: auto !important;
+}
+
+[dir="rtl"] .mr-auto {
+	margin-right: 0 !important;
+	margin-left: auto !important;
+}
+
+[dir="rtl"] .text-right {
+	text-align: left !important;
+}
+
+[dir="rtl"] .text-left {
+	text-align: right !important;
+}
+
+[dir="rtl"] .navbar-nav {
+	padding-right: 0;
+}
+
+[dir="rtl"] .dropdown-menu {
+	text-align: right;
+}
+
+[dir="rtl"] .dashboard-nav-item i {
+	margin-right: 0;
+	margin-left: 15px;
+}
+
+[dir="rtl"] .course-card .card-img-top {
+	transform: scaleX(-1);
+}
+
+/* Print Styles */
+@media print {
+	.no-print {
+		display: none !important;
+	}
+
+	.print-only {
+		display: block !important;
+	}
+
+	body {
+		background-color: white !important;
+		color: black !important;
+	}
+
+	.container,
+	.container-fluid {
+		width: 100% !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+	a {
+		text-decoration: none !important;
+		color: black !important;
+	}
+
+	.card,
+	.card-body {
+		border: none !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		box-shadow: none !important;
+	}
+
+	.certificate-container {
+		page-break-inside: avoid;
+	}
+}

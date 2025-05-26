@@ -1,0 +1,40 @@
+/*
+ * EduLearn LMS - Main CSS Import File
+ * Version: 1.0
+ * Created: May 25, 2025
+ *
+ * This file imports all CSS files needed for the LMS system
+ */
+
+/* Base Styles */
+@import url("lms-style.css");
+
+/* Additional Enhanced Styles */
+@import url("additional-styles.css");
+
+/* UI Components */
+@import url("ui-components.css");
+
+/* Dashboard & Profile Styles */
+@import url("dashboard-profiles.css");
+
+/* Responsive Layout */
+@import url("responsive.css");
+
+/* Animations & Transitions */
+@import url("animations.css");
+
+/* Theme Customization - Must be last to override other styles */
+@import url("theme-customization.css");
+
+/* Google Fonts - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+/* Font Awesome Icons */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+
+/* Google Fonts - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+/* Font Awesome Icons */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");

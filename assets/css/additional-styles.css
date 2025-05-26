@@ -1,0 +1,429 @@
+/* 
+ * EduLearn LMS - Additional CSS Styles
+ * Version 1.0
+ * Created: May 25, 2025
+ */
+
+/* Enhanced Dashboard Elements */
+.stats-dashboard {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.stats-card-enhanced {
+	background-color: #fff;
+	border-radius: var(--border-radius);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	transition: all 0.3s ease;
+}
+
+.stats-card-enhanced:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stats-card-enhanced .stats-icon-wrapper {
+	width: 60px;
+	height: 60px;
+	border-radius: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+
+.stats-card-enhanced .stats-data {
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+	line-height: 1;
+}
+
+.stats-card-enhanced .stats-label {
+	color: var(--text-light);
+	font-size: 0.9rem;
+	margin-bottom: 0.5rem;
+}
+
+.stats-card-enhanced .stats-trend {
+	display: flex;
+	align-items: center;
+	font-size: 0.85rem;
+}
+
+.stats-card-enhanced .stats-trend-up {
+	color: var(--success);
+}
+
+.stats-card-enhanced .stats-trend-down {
+	color: var(--danger);
+}
+
+/* Progress Bars with Animation */
+.progress-enhanced {
+	height: 10px;
+	margin-bottom: 0.75rem;
+	overflow: hidden;
+	background-color: #e9ecef;
+	border-radius: 10px;
+}
+
+.progress-bar-animated {
+	position: relative;
+	overflow: hidden;
+}
+
+.progress-bar-animated::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: linear-gradient(
+		45deg,
+		rgba(255, 255, 255, 0.15) 25%,
+		transparent 25%,
+		transparent 50%,
+		rgba(255, 255, 255, 0.15) 50%,
+		rgba(255, 255, 255, 0.15) 75%,
+		transparent 75%,
+		transparent
+	);
+	background-size: 1rem 1rem;
+	animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+	from {
+		background-position: 1rem 0;
+	}
+	to {
+		background-position: 0 0;
+	}
+}
+
+/* Enhanced Course Cards */
+.course-card-modern {
+	border: none;
+	border-radius: 15px;
+	overflow: hidden;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+	transition: all 0.3s ease;
+	height: 100%;
+}
+
+.course-card-modern:hover {
+	transform: translateY(-8px);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.course-card-modern .card-img-container {
+	position: relative;
+	overflow: hidden;
+	height: 200px;
+}
+
+.course-card-modern .card-img-top {
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.5s ease;
+}
+
+.course-card-modern:hover .card-img-top {
+	transform: scale(1.05);
+}
+
+.course-card-modern .course-level {
+	position: absolute;
+	top: 15px;
+	left: 15px;
+	background-color: rgba(255, 255, 255, 0.9);
+	color: var(--text-color);
+	font-size: 0.8rem;
+	padding: 0.3rem 0.75rem;
+	border-radius: 20px;
+	font-weight: 500;
+}
+
+.course-card-modern .course-price {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	background-color: var(--primary-color);
+	color: white;
+	font-size: 0.9rem;
+	padding: 0.3rem 0.75rem;
+	border-radius: 20px;
+	font-weight: 600;
+}
+
+.course-card-modern .card-body {
+	padding: 1.5rem;
+}
+
+.course-card-modern .course-title {
+	font-size: 1.2rem;
+	font-weight: 600;
+	margin-bottom: 0.75rem;
+	line-height: 1.4;
+	height: 3.36rem;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
+.course-card-modern .course-meta {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.85rem;
+	color: var(--text-light);
+	margin-bottom: 0.75rem;
+}
+
+.course-card-modern .instructor-info {
+	display: flex;
+	align-items: center;
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.course-card-modern .instructor-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-right: 0.75rem;
+}
+
+.course-card-modern .instructor-name {
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+/* Video Player Custom Styling */
+.video-player-container {
+	position: relative;
+	width: 100%;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.video-player-container video {
+	width: 100%;
+	display: block;
+}
+
+.video-controls {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+	padding: 1rem;
+	display: flex;
+	align-items: center;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.video-player-container:hover .video-controls {
+	opacity: 1;
+}
+
+.video-progress {
+	flex-grow: 1;
+	height: 5px;
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius: 5px;
+	margin: 0 1rem;
+	cursor: pointer;
+	position: relative;
+}
+
+.video-progress-filled {
+	background-color: var(--primary-color);
+	height: 100%;
+	border-radius: 5px;
+	width: 0;
+}
+
+.video-button {
+	background: none;
+	border: none;
+	color: white;
+	font-size: 1.2rem;
+	cursor: pointer;
+	padding: 0.5rem;
+}
+
+/* Notification Bell with Animation */
+.notification-bell {
+	position: relative;
+}
+
+.notification-dot {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 8px;
+	height: 8px;
+	background-color: var(--danger);
+	border-radius: 50%;
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.5);
+		opacity: 0.7;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+/* Loading Animation */
+.loader {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 200px;
+}
+
+.loader-dots {
+	display: flex;
+	align-items: center;
+}
+
+.loader-dot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: var(--primary-color);
+	margin: 0 4px;
+	animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loader-dot:nth-child(1) {
+	animation-delay: -0.32s;
+}
+
+.loader-dot:nth-child(2) {
+	animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+	0%,
+	80%,
+	100% {
+		transform: scale(0);
+	}
+	40% {
+		transform: scale(1);
+	}
+}
+
+/* Dark Mode Styling */
+.dark-mode {
+	--text-color: #f8f9fa;
+	--text-light: #adb5bd;
+	--bg-light: #343a40;
+	--bg-dark: #212529;
+	background-color: #1a1d20;
+}
+
+.dark-mode .card,
+.dark-mode .stats-card-enhanced,
+.dark-mode .dashboard-sidebar,
+.dark-mode .course-card-modern {
+	background-color: #2a2e32;
+	border-color: #444;
+}
+
+.dark-mode .navbar,
+.dark-mode .modal-content,
+.dark-mode .dropdown-menu {
+	background-color: #2a2e32;
+}
+
+.dark-mode .dropdown-item:hover {
+	background-color: rgba(52, 152, 219, 0.2);
+}
+
+.dark-mode .border,
+.dark-mode .border-top,
+.dark-mode .border-bottom,
+.dark-mode .border-left,
+.dark-mode .border-right {
+	border-color: #444 !important;
+}
+
+.dark-mode .text-dark {
+	color: #f8f9fa !important;
+}
+
+.dark-mode .text-muted {
+	color: #adb5bd !important;
+}
+
+/* Responsive Fixes for Mobile */
+@media (max-width: 767.98px) {
+	.stats-dashboard {
+		grid-template-columns: 1fr;
+	}
+
+	.course-card-modern .card-img-container {
+		height: 160px;
+	}
+
+	.video-player-container .video-controls {
+		padding: 0.5rem;
+	}
+
+	.video-button {
+		font-size: 1rem;
+		padding: 0.25rem;
+	}
+}
+
+/* Print Styles for Certificates */
+@media print {
+	.certificate-container {
+		box-shadow: none;
+		border-width: 10px;
+	}
+
+	body * {
+		visibility: hidden;
+	}
+
+	.certificate-container,
+	.certificate-container * {
+		visibility: visible;
+	}
+
+	.certificate-container {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+	}
+
+	.no-print {
+		display: none !important;
+	}
+}
