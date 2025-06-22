@@ -11,19 +11,20 @@ class Dashboard extends CI_Controller {
         $this->load->model('Quiz_model');
         $this->load->model('Category_model');
         
-        // Check if user is logged in
-        if (!$this->session->userdata('logged_in')) {
-            redirect('auth/login');
+        // Ensure session is started
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Check if user is logged in using native PHP session
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== TRUE) {
+            redirect('auth/login?error=' . urlencode('Please login to access the dashboard'));
         }
     }
     
     public function index() {
-        // Get user information
-        $user_id = $this->session->userdata('user_id');
-        $data['user'] = $this->User_model->get_user($user_id);
-        
         // Determine user role and redirect to appropriate dashboard
-        $role = $data['user']['role'];
+        $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
         
         if ($role == 'admin') {
             redirect('dashboard/admin');
@@ -33,6 +34,26 @@ class Dashboard extends CI_Controller {
             redirect('dashboard/student');
         }
     }
+    
+    public function admin() {
+        // Simple admin dashboard view for troubleshooting
+        $this->load->view('dashboard/admin_simple');
+    }
+    
+    public function instructor() {
+        // Simple message for instructor dashboard
+        echo '<h1>Instructor Dashboard</h1>';
+        echo '<p>This is a placeholder for the instructor dashboard.</p>';
+        echo '<p><a href="'.site_url('auth/logout').'">Logout</a></p>';
+    }
+    
+    public function student() {
+        // Simple message for student dashboard
+        echo '<h1>Student Dashboard</h1>';
+        echo '<p>This is a placeholder for the student dashboard.</p>';
+        echo '<p><a href="'.site_url('auth/logout').'">Logout</a></p>';
+    }
+}
     
     public function student() {
         // Get user information
@@ -115,33 +136,9 @@ class Dashboard extends CI_Controller {
     }
     
     public function admin() {
-        // Get user information
-        $user_id = $this->session->userdata('user_id');
-        $data['user'] = $this->User_model->get_user($user_id);
-        
-        // Check if user is an admin
-        if ($data['user']['role'] != 'admin') {
-            redirect('dashboard');
-        }
-        
-        // Get total statistics
-        $data['stats'] = [
-            'courses' => $this->Course_model->get_total_courses(),
-            'students' => $this->User_model->get_total_students(),
-            'instructors' => $this->User_model->get_total_instructors(),
-            'categories' => $this->Category_model->get_total_categories(),
-            'revenue' => $this->Course_model->get_total_revenue()
-        ];
-        
-        // Get recent users
-        $data['recent_users'] = $this->User_model->get_recent_users(5);
-        
-        // Get recent courses
-        $data['recent_courses'] = $this->Course_model->get_latest_courses(5);
-        
-        // Get popular courses
-        $data['popular_courses'] = $this->Course_model->get_popular_courses(5);
-        
+        // Simple admin dashboard view for troubleshooting
+        $this->load->view('dashboard/admin_simple');
+    }
         // Get revenue by month
         $data['monthly_revenue'] = $this->Course_model->get_monthly_revenue();
         

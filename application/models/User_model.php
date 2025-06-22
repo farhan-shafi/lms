@@ -106,4 +106,21 @@ class User_model extends CI_Model {
         $this->db->where('id', $id);
         return $this->db->delete('users');
     }
+    
+    /**
+     * Verify user login credentials
+     * 
+     * @param string $email
+     * @param string $password
+     * @return array|bool User data array if verified, false otherwise
+     */
+    public function verify_login($email, $password) {
+        $user = $this->get_user_by_email($email);
+        
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
+        }
+        
+        return false;
+    }
 }
