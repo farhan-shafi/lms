@@ -1,5 +1,4 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-
 <div class="dashboard-container">
     <div class="container">
         <div class="row">

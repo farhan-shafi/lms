@@ -466,4 +466,52 @@ class Admin extends CI_Controller {
         $this->load->view('admin/payments', $data);
         $this->load->view('templates/footer');
     }
+
+    /**
+     * Instructor management
+     */
+    public function instructors() {
+        // Get all users with the 'instructor' role
+        $data['instructors'] = $this->User_model->get_users_by_role('instructor');
+        
+        // Page metadata
+        $data['title'] = 'Instructor Management';
+        
+        // Load views
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/instructors', $data);
+        $this->load->view('templates/footer');
+    }
+
+    /**
+     * Student management
+     */
+    public function students() {
+        // Get all users with the 'student' role
+        $data['students'] = $this->User_model->get_users_by_role('student');
+        
+        // Page metadata
+        $data['title'] = 'Student Management';
+        
+        // Load views
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/students', $data);
+        $this->load->view('templates/footer');
+    }
+
+    /**
+     * Enrollment management
+     */
+    public function enrollments() {
+        // Get all enrollments
+        $data['enrollments'] = $this->Enrollment_model->get_all_enrollments();
+        
+        // Page metadata
+        $data['title'] = 'Enrollment Management';
+        
+        // Load views
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/enrollments', $data);
+        $this->load->view('templates/footer');
+    }
 }

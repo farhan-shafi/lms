@@ -116,8 +116,8 @@ class User_model extends CI_Model {
      */
     public function verify_login($email, $password) {
         $user = $this->get_user_by_email($email);
-        
-        if ($user && password_verify($password, $user['password'])) {
+
+		if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
         

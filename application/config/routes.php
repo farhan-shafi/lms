@@ -156,6 +156,9 @@ $route['admin/edit_category/(:num)'] = 'admin/edit_category/$1';
 $route['admin/delete_category/(:num)'] = 'admin/delete_category/$1';
 $route['admin/settings'] = 'admin/settings';
 $route['admin/payments'] = 'admin/payments';
+$route['admin/instructors'] = 'admin/instructors';
+$route['admin/students'] = 'admin/students';
+$route['admin/enrollments'] = 'admin/enrollments';
 
 // Home routes
 $route['about'] = 'home/about';
