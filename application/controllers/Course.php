@@ -16,6 +16,7 @@ class Course extends CI_Controller {
         $this->load->model('Category_model');
         $this->load->model('User_model');
         $this->load->helper('lms_helper');
+        $this->load->library('pagination'); // Explicitly load pagination library
     }
     
     /**
@@ -23,9 +24,18 @@ class Course extends CI_Controller {
      */
     public function index() {
         // Get filter parameters
-        $category_id = $this->input->get('category');
+        $category_slug = $this->input->get('category');
         $search = $this->input->get('search');
         $sort = $this->input->get('sort', TRUE) ?: 'latest';
+        
+        // Get category ID if slug is provided
+        $category_id = null;
+        if ($category_slug) {
+            $category = $this->Category_model->get_category_by_slug($category_slug);
+            if ($category) {
+                $category_id = $category['id'];
+            }
+        }
         
         // Pagination configuration
         $config['base_url'] = site_url('courses');
@@ -74,6 +84,11 @@ class Course extends CI_Controller {
         
         // Get categories for filter sidebar
         $data['categories'] = $this->Category_model->get_active_categories();
+        
+        // Add course count to each category
+        foreach ($data['categories'] as &$category) {
+            $category['course_count'] = $this->Category_model->count_courses_in_category($category['id']);
+        }
         
         // Page metadata
         $data['title'] = 'All Courses';

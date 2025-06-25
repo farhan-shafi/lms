@@ -1,4 +1,8 @@
 RewriteEngine On
+RewriteBase /lms/
+
+# If the requested path and file are not /index.php and don't exist
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?/$1 [L]
+# Then rewrite the request to index.php
+RewriteRule ^(.*)$ index.php?/$1 [QSA,L]

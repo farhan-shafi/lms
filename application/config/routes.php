@@ -53,6 +53,21 @@ $route['default_controller'] = 'home';
 $route['404_override'] = 'errors/page_missing';
 $route['translate_uri_dashes'] = FALSE;
 
+// Test route
+$route['test'] = 'test/index';
+
+// Course routes - moved to top for priority
+$route['courses'] = 'courses/index';
+$route['course/(:any)'] = 'course/view/$1';
+$route['course/category/(:any)'] = 'course/category/$1';
+$route['course/search'] = 'course/search';
+$route['course/enroll/(:num)'] = 'course/enroll/$1';
+$route['course/learn/(:num)'] = 'course/learn/$1';
+$route['course/learn/(:num)/(:num)'] = 'course/learn/$1/$2';
+$route['course/complete/(:num)'] = 'course/complete/$1';
+$route['course/rate/(:num)'] = 'course/rate/$1';
+$route['course/certificate/(:num)'] = 'course/certificate/$1';
+
 // Authentication routes
 $route['login'] = 'auth/login';
 $route['register'] = 'auth/register';
@@ -97,18 +112,6 @@ $route['instructor/delete_question/(:num)'] = 'instructor/delete_question/$1';
 $route['instructor/course_analytics/(:num)'] = 'instructor/course_analytics/$1';
 $route['instructor/earnings'] = 'instructor/earnings';
 $route['instructor/request_payout'] = 'instructor/request_payout';
-
-// Course routes
-$route['courses'] = 'course/index';
-$route['course/(:any)'] = 'course/view/$1';
-$route['course/category/(:any)'] = 'course/category/$1';
-$route['course/search'] = 'course/search';
-$route['course/enroll/(:num)'] = 'course/enroll/$1';
-$route['course/learn/(:num)'] = 'course/learn/$1';
-$route['course/learn/(:num)/(:num)'] = 'course/learn/$1/$2';
-$route['course/complete/(:num)'] = 'course/complete/$1';
-$route['course/rate/(:num)'] = 'course/rate/$1';
-$route['course/certificate/(:num)'] = 'course/certificate/$1';
 
 // Module routes
 $route['module/index/(:num)'] = 'module/index/$1';
