@@ -471,7 +471,7 @@ class Admin extends CI_Controller {
      * Instructor management
      */
     public function instructors() {
-        // Get all users with the 'instructor' role
+       // Get all users with the 'instructor' role
         $data['instructors'] = $this->User_model->get_users_by_role('instructor');
         
         // Page metadata

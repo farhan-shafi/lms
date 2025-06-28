@@ -169,3 +169,51 @@ $route['contact'] = 'home/contact';
 $route['terms'] = 'home/terms';
 $route['privacy'] = 'home/privacy';
 $route['subscribe'] = 'home/subscribe';
+
+// Discussion routes
+$route['discussions'] = 'discussion/index';
+$route['discussion/view/(:num)'] = 'discussion/view/$1';
+$route['discussion/create'] = 'discussion/create';
+$route['discussion/reply/(:num)'] = 'discussion/reply/$1';
+$route['discussion/delete/(:num)'] = 'discussion/delete/$1';
+$route['discussion/edit/(:num)'] = 'discussion/edit/$1';
+$route['discussion/course/(:num)'] = 'discussion/course/$1';
+
+// Certificate routes
+$route['certificates'] = 'certificate/index';
+$route['certificate/view/(:num)'] = 'certificate/view/$1';
+$route['certificate/verify/(:any)'] = 'certificate/verify/$1';
+$route['certificate/generate/(:num)'] = 'certificate/generate/$1';
+$route['certificate/download/(:num)'] = 'certificate/download/$1';
+
+// Announcement routes
+$route['announcements'] = 'announcement/index';
+$route['announcement/view/(:num)'] = 'announcement/view/$1';
+$route['announcement/create'] = 'announcement/create';
+$route['announcement/edit/(:num)'] = 'announcement/edit/$1';
+$route['announcement/delete/(:num)'] = 'announcement/delete/$1';
+
+// Review routes
+$route['reviews'] = 'review/index';
+$route['review/create/(:num)'] = 'review/create/$1';
+$route['review/edit/(:num)'] = 'review/edit/$1';
+$route['review/delete/(:num)'] = 'review/delete/$1';
+$route['review/report/(:num)'] = 'review/report/$1';
+$route['review/course/(:num)'] = 'review/course/$1';
+
+// Progress routes
+$route['progress'] = 'progress/index';
+$route['progress/course/(:num)'] = 'progress/course/$1';
+$route['progress/update/(:num)/(:num)'] = 'progress/update/$1/$2';
+$route['progress/track/(:num)'] = 'progress/track/$1';
+
+// Settings routes
+$route['settings'] = 'settings/index';
+$route['settings/payment'] = 'settings/payment';
+$route['settings/email'] = 'settings/email';
+$route['settings/appearance'] = 'settings/appearance';
+$route['settings/certificates'] = 'settings/certificates';
+$route['settings/maintenance'] = 'settings/maintenance';
+$route['settings/test_email'] = 'settings/test_email';
+$route['settings/documentation'] = 'settings/documentation';
+$route['settings/download_documentation'] = 'settings/download_documentation';
