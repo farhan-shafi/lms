@@ -182,4 +182,37 @@ class Review_model extends CI_Model {
         $this->db->where('id', $course_id);
         return $this->db->update('courses', ['average_rating' => $avg_rating]);
     }
+    
+    /**
+     * Get reviews by course (alias for get_course_reviews)
+     * 
+     * @param int $course_id
+     * @param string $status Filter by status (approved, pending, rejected)
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function get_reviews_by_course($course_id, $status = 'approved', $limit = NULL, $offset = NULL) {
+        return $this->get_course_reviews($course_id, $status, $limit, $offset);
+    }
+    
+    /**
+     * Get rating counts for each star rating
+     * 
+     * @param int $course_id
+     * @return array
+     */
+    public function get_rating_counts($course_id) {
+        return $this->get_rating_distribution($course_id);
+    }
+    
+    /**
+     * Report a review
+     * 
+     * @param array $data Report data
+     * @return bool
+     */
+    public function report_review($data) {
+        return $this->db->insert('review_reports', $data);
+    }
 }

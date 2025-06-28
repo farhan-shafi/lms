@@ -76,7 +76,7 @@ class Certificate_model extends CI_Model {
     public function generate_certificate_number() {
         $prefix = 'CERT-';
         $year = date('Y');
-        $random = mt_rand(10000, 99999);
+        $random = substr(uniqid(), -5);
         
         // Get the next sequential number
         $this->db->select_max('id');

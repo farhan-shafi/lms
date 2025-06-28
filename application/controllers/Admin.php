@@ -6,27 +6,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *
  * This controller handles administrative operations
  */
-class Admin extends CI_Controller {
+class Admin extends Admin_Controller {
     
     public function __construct() {
         parent::__construct();
-        // Check if user is logged in and is an admin
-        if (!$this->session->userdata('user_id')) {
-            redirect('auth/login');
-        }
-        
-        $this->load->model('User_model');
-        $user = $this->User_model->get_user_by_id($this->session->userdata('user_id'));
-        
-        if (!$user || $user['role'] != 'admin') {
-            $this->session->set_flashdata('error', 'You do not have permission to access the admin area');
-            redirect('dashboard');
-        }
         
         // Load models
+        $this->load->model('User_model');
         $this->load->model('Course_model');
         $this->load->model('Category_model');
         $this->load->model('Enrollment_model');
+        
+        // Load pagination library
+        $this->load->library('pagination');
     }
     
     /**

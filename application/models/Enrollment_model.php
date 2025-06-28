@@ -248,7 +248,8 @@ class Enrollment_model extends CI_Model {
         
         // Generate certificate number if not exists
         if (!$enrollment['certificate_number']) {
-            $certificate_number = 'CERT-' . date('Y') . '-' . $course_id . '-' . $user_id . '-' . mt_rand(1000, 9999);
+            $random = substr(uniqid(), -4);
+            $certificate_number = 'CERT-' . date('Y') . '-' . $course_id . '-' . $user_id . '-' . $random;
             
             $this->db->where('user_id', $user_id);
             $this->db->where('course_id', $course_id);
@@ -317,5 +318,42 @@ class Enrollment_model extends CI_Model {
         }
         
         return $lessons;
+    }
+    
+    /**
+     * Get all enrollments in the system
+     * 
+     * @param string $status Optional enrollment status filter
+     * @return array
+     */
+    public function get_all_enrollments($status = null) {
+        $this->db->select('enrollments.*, courses.title as course_title, users.name as student_name, users.email as student_email');
+        $this->db->from('enrollments');
+        $this->db->join('courses', 'courses.id = enrollments.course_id');
+        $this->db->join('users', 'users.id = enrollments.user_id');
+        
+        if ($status) {
+            $this->db->where('enrollments.status', $status);
+        }
+        
+        $this->db->order_by('enrollments.enrollment_date', 'DESC');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    
+    /**
+     * Get specific enrollment for a user and course
+     * 
+     * @param int $user_id
+     * @param int $course_id
+     * @return array|null
+     */
+    public function get_enrollment($user_id, $course_id) {
+        $this->db->select('*');
+        $this->db->from('enrollments');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('course_id', $course_id);
+        $query = $this->db->get();
+        return $query->row_array();
     }
 }

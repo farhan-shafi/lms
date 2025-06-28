@@ -123,4 +123,18 @@ class User_model extends CI_Model {
         
         return false;
     }
+    
+    /**
+     * Get users by role
+     * 
+     * @param string $role Role type (student, instructor, admin)
+     * @param string $status Status filter (optional)
+     * @return array
+     */
+    public function get_users_by_role($role) {
+        $this->db->where('role', $role);
+        $this->db->order_by('name', 'ASC');
+        $query = $this->db->get('users');
+        return $query->result_array();
+    }
 }
