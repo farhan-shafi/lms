@@ -386,4 +386,34 @@ class Quiz_model extends CI_Model {
         
         return $quizzes;
     }
+    
+    /**
+     * Get upcoming quizzes for a user
+     * 
+     * @param int $user_id
+     * @param int $limit
+     * @return array
+     */
+    public function get_upcoming_quizzes($user_id, $limit = 5) {
+        $this->db->select('q.*, c.title as course_title, m.title as module_title');
+        $this->db->from('quizzes q');
+        $this->db->join('modules m', 'm.id = q.module_id');
+        $this->db->join('courses c', 'c.id = m.course_id');
+        $this->db->join('enrollments e', 'e.course_id = c.id');
+        $this->db->where('e.user_id', $user_id);
+        $this->db->where('q.due_date >=', date('Y-m-d'));
+        $this->db->order_by('q.due_date', 'ASC');
+        $this->db->limit($limit);
+        
+        // Exclude completed quizzes
+        $this->db->where('q.id NOT IN (
+            SELECT quiz_id FROM progress_tracking 
+            WHERE user_id = ' . $this->db->escape($user_id) . ' 
+            AND quiz_id IS NOT NULL 
+            AND status = "completed"
+        )', NULL, FALSE);
+        
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }

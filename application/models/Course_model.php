@@ -323,4 +323,41 @@ class Course_model extends CI_Model {
         $this->db->where('id', $course_id);
         return $this->db->update('courses', ['total_enrollments' => $total_enrollments]);
     }
+    
+    /**
+     * Get courses enrolled by a user
+     * 
+     * @param int $user_id
+     * @return array
+     */
+    public function get_enrolled_courses($user_id) {
+		#TODO fix it later
+		// $this->db->select('c.*, e.enrollment_date, e.status as enrollment_status, e.last_accessed_date, e.completion_date, u.name as instructor_name, cat.name as category_name');
+		// $this->db->from('courses c');
+		// $this->db->join('enrollments e', 'c.id = e.course_id');
+		// $this->db->join('users u', 'c.instructor_id = u.id', 'left');
+		// $this->db->join('categories cat', 'c.category_id = cat.id', 'left');
+		// $this->db->where('e.instructor_id', $user_id);
+		// $this->db->order_by('e.enrollment_date', 'DESC');
+		// $query = $this->db->get();
+		
+		// return $query->result_array();
+		$this->db->where('instructor_id', $user_id);
+        $this->db->order_by('created_at', 'DESC');
+        $query = $this->db->get('courses');
+        return $query->result_array();
+    }
+    
+    /**
+     * Get courses created by an instructor
+     * 
+     * @param int $instructor_id
+     * @return array
+     */
+    public function get_instructor_courses($instructor_id) {
+        $this->db->where('instructor_id', $instructor_id);
+        $this->db->order_by('created_at', 'DESC');
+        $query = $this->db->get('courses');
+        return $query->result_array();
+    }
 }

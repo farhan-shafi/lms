@@ -1,43 +1,46 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div class="dashboard-container">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-lg-3">
-                <div class="dashboard-sidebar">
-                    <div class="user-profile text-center">
-                        <div class="profile-image">
-                            <?php if ($user['profile_image'] && file_exists('./assets/images/profiles/'.$user['profile_image'])): ?>
-                                <img src="<?= base_url('assets/images/profiles/'.$user['profile_image']) ?>" alt="<?= $user['name'] ?>" class="img-fluid rounded-circle">
-                            <?php else: ?>
-                                <img src="<?= base_url('assets/images/profiles/default.jpg') ?>" alt="<?= $user['name'] ?>" class="img-fluid rounded-circle">
-                            <?php endif; ?>
-                        </div>
-                        <h4 class="user-name"><?= $user['name'] ?></h4>
-                        <p class="user-role">Instructor</p>
-                    </div>
-                    <ul class="dashboard-menu">
-                        <li class="active"><a href="<?= base_url('dashboard/instructor') ?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                        <li><a href="<?= base_url('dashboard/courses') ?>"><i class="fas fa-book-open"></i> My Courses</a></li>
-                        <li><a href="<?= base_url('instructor/create_course') ?>"><i class="fas fa-plus-circle"></i> Create Course</a></li>
-                        <li><a href="<?= base_url('instructor/reviews') ?>"><i class="fas fa-star"></i> Reviews</a></li>
-                        <li><a href="<?= base_url('instructor/earnings') ?>"><i class="fas fa-dollar-sign"></i> Earnings</a></li>
-                        <li><a href="<?= base_url('instructor/students') ?>"><i class="fas fa-users"></i> Students</a></li>
-                        <li><a href="<?= base_url('dashboard/notifications') ?>"><i class="fas fa-bell"></i> Notifications</a></li>
-                        <li><a href="<?= base_url('dashboard/profile') ?>"><i class="fas fa-user"></i> My Profile</a></li>
-                        <li><a href="<?= base_url('dashboard/change_password') ?>"><i class="fas fa-lock"></i> Change Password</a></li>
-                        <li><a href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </div>
+            <div class="col-lg-2">
+                <?php $this->load->view('templates/instructor_sidebar'); ?>
             </div>
             
             <!-- Main Content -->
-            <div class="col-lg-9">
+            <div class="col-lg-10">
                 <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">Instructor Dashboard</h1>
-                    <p class="dashboard-subtitle">Welcome back, <?= $user['name'] ?>!</p>
+                <div class="admin-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <button class="btn sidebar-toggle d-lg-none me-2">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <h1 class="admin-title">Instructor Dashboard</h1>
+                            <p class="admin-subtitle">Welcome back, <?= $user['name'] ?>!</p>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="admin-user-dropdown">
+                                <div class="dropdown">
+                                    <button class="btn dropdown-toggle" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <?php if ($user['profile_image'] && file_exists('./assets/images/profiles/'.$user['profile_image'])): ?>
+                                            <img src="<?= base_url('assets/images/profiles/'.$user['profile_image']) ?>" alt="<?= $user['name'] ?>" class="user-image">
+                                        <?php else: ?>
+                                            <img src="<?= base_url('assets/images/profiles/default.jpg') ?>" alt="<?= $user['name'] ?>" class="user-image">
+                                        <?php endif; ?>
+                                        <span class="user-name"><?= $user['name'] ?></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                        <a class="dropdown-item" href="<?= base_url('dashboard/profile') ?>"><i class="fas fa-user"></i> Profile</a>
+                                        <a class="dropdown-item" href="<?= base_url('dashboard/change_password') ?>"><i class="fas fa-lock"></i> Change Password</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Dashboard Stats -->
@@ -292,81 +295,3 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Student Engagement Chart
-    var engagementCtx = document.getElementById('engagementChart').getContext('2d');
-    var engagementChart = new Chart(engagementCtx, {
-        type: 'line',
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-            datasets: [{
-                label: 'Course Views',
-                data: [<?= implode(',', $engagement['weekly_views']) ?>],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2,
-                tension: 0.4
-            }, {
-                label: 'Lesson Completions',
-                data: [<?= implode(',', $engagement['weekly_completions']) ?>],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                tension: 0.4
-            }, {
-                label: 'Quiz Attempts',
-                data: [<?= implode(',', $engagement['weekly_quiz_attempts']) ?>],
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 2,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-    
-    // Monthly Earnings Chart
-    var earningsCtx = document.getElementById('earningsChart').getContext('2d');
-    var earningsChart = new Chart(earningsCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                label: 'Monthly Earnings ($)',
-                data: [
-                    <?php 
-                    $monthlyData = array_fill(0, 12, 0);
-                    foreach ($monthly_earnings as $earning) {
-                        $month = intval(date('n', strtotime($earning['month']))) - 1;
-                        $monthlyData[$month] = $earning['amount'];
-                    }
-                    echo implode(',', $monthlyData);
-                    ?>
-                ],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-});
-</script>

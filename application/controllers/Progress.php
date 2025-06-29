@@ -225,4 +225,44 @@ class Progress extends Auth_Controller {
             redirect('progress');
         }
     }
+    
+    /**
+     * Track user's progress in a course (used for analytics)
+     * 
+     * @param int $course_id
+     */
+    public function track($course_id) {
+        $user_id = $this->session->userdata('user_id');
+        
+        // Verify course exists
+        $course = $this->Course_model->get_course_by_id($course_id);
+        if (!$course) {
+            // Return JSON error
+            $this->output->set_content_type('application/json')
+                         ->set_output(json_encode(['status' => 'error', 'message' => 'Course not found']));
+            return;
+        }
+        
+        // Record tracking data
+        $tracking_data = [
+            'user_id' => $user_id,
+            'course_id' => $course_id,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'action' => $this->input->get('action') ?: 'view',
+            'duration' => $this->input->get('duration') ?: NULL,
+            'lesson_id' => $this->input->get('lesson_id') ?: NULL,
+            'quiz_id' => $this->input->get('quiz_id') ?: NULL,
+            'page' => $this->input->get('page') ?: NULL,
+            'user_agent' => $this->input->user_agent()
+        ];
+        
+        // Store tracking data
+        if ($this->Progress_model->track_user_activity($tracking_data)) {
+            $this->output->set_content_type('application/json')
+                         ->set_output(json_encode(['status' => 'success']));
+        } else {
+            $this->output->set_content_type('application/json')
+                         ->set_output(json_encode(['status' => 'error', 'message' => 'Failed to record tracking data']));
+        }
+    }
 }

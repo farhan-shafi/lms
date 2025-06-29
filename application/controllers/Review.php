@@ -251,4 +251,14 @@ class Review extends Auth_Controller {
         $this->load->view('review/report', $data);
         $this->load->view('templates/footer');
     }
+    
+    /**
+     * View all reviews for a specific course
+     * 
+     * @param int $course_id
+     */
+    public function course($course_id) {
+        // Redirect to index method with course_id
+        redirect('review/index/' . $course_id);
+    }
 }

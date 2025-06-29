@@ -14,6 +14,9 @@
                 <div class="admin-header">
                     <div class="row align-items-center">
                         <div class="col-md-6">
+                            <button class="btn sidebar-toggle d-lg-none me-2">
+                                <i class="fas fa-bars"></i>
+                            </button>
                             <h1 class="admin-title">Admin Dashboard</h1>
                             <p class="admin-subtitle">Welcome back, <?= $user['name'] ?>!</p>
                         </div>

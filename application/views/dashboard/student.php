@@ -1,39 +1,81 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php
+// Add this debugging section temporarily
+if (isset($error_courses)) {
+    echo '<div class="alert alert-danger">Error loading courses: ' . $error_courses . '</div>';
+}
+
+// Make sure enrolled_courses is always an array
+if (!isset($enrolled_courses) || !is_array($enrolled_courses)) {
+    $enrolled_courses = [];
+}
+
+// Make sure recommended_courses is always an array
+if (!isset($recommended_courses) || !is_array($recommended_courses)) {
+    $recommended_courses = [];
+}
+
+// Make sure course_progress is always an array
+if (!isset($course_progress) || !is_array($course_progress)) {
+    $course_progress = [];
+}
+
+// Make sure upcoming_quizzes is always an array
+if (!isset($upcoming_quizzes) || !is_array($upcoming_quizzes)) {
+    $upcoming_quizzes = [];
+}
+
+// Make sure recent_activities is always an array
+if (!isset($recent_activities) || !is_array($recent_activities)) {
+    $recent_activities = [];
+}
+
+// Make sure certificates is always an array
+if (!isset($certificates) || !is_array($certificates)) {
+    $certificates = [];
+}
+?>
 <div class="dashboard-container">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-lg-3">
-                <div class="dashboard-sidebar">
-                    <div class="user-profile text-center">
-                        <div class="profile-image">
-                            <?php if ($user['profile_image'] && file_exists('./assets/images/profiles/'.$user['profile_image'])): ?>
-                                <img src="<?= base_url('assets/images/profiles/'.$user['profile_image']) ?>" alt="<?= $user['name'] ?>" class="img-fluid rounded-circle">
-                            <?php else: ?>
-                                <img src="<?= base_url('assets/images/profiles/default.jpg') ?>" alt="<?= $user['name'] ?>" class="img-fluid rounded-circle">
-                            <?php endif; ?>
-                        </div>
-                        <h4 class="user-name"><?= $user['name'] ?></h4>
-                        <p class="user-role">Student</p>
-                    </div>
-                    <ul class="dashboard-menu">
-                        <li class="active"><a href="<?= base_url('dashboard/student') ?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                        <li><a href="<?= base_url('dashboard/courses') ?>"><i class="fas fa-book-open"></i> My Courses</a></li>
-                        <li><a href="<?= base_url('dashboard/certificates') ?>"><i class="fas fa-certificate"></i> Certificates</a></li>
-                        <li><a href="<?= base_url('dashboard/notifications') ?>"><i class="fas fa-bell"></i> Notifications</a></li>
-                        <li><a href="<?= base_url('dashboard/profile') ?>"><i class="fas fa-user"></i> My Profile</a></li>
-                        <li><a href="<?= base_url('dashboard/change_password') ?>"><i class="fas fa-lock"></i> Change Password</a></li>
-                        <li><a href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </div>
+            <div class="col-lg-2">
+                <?php $this->load->view('templates/student_sidebar'); ?>
             </div>
             
             <!-- Main Content -->
-            <div class="col-lg-9">
+            <div class="col-lg-10">
                 <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">Student Dashboard</h1>
-                    <p class="dashboard-subtitle">Welcome back, <?= $user['name'] ?>!</p>
+                <div class="admin-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <button class="btn sidebar-toggle d-lg-none me-2">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <h1 class="admin-title">Student Dashboard</h1>
+                            <p class="admin-subtitle">Welcome back, <?= $user['name'] ?>!</p>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="admin-user-dropdown">
+                                <div class="dropdown">
+                                    <button class="btn dropdown-toggle" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <?php if ($user['profile_image'] && file_exists('./assets/images/profiles/'.$user['profile_image'])): ?>
+                                            <img src="<?= base_url('assets/images/profiles/'.$user['profile_image']) ?>" alt="<?= $user['name'] ?>" class="user-image">
+                                        <?php else: ?>
+                                            <img src="<?= base_url('assets/images/profiles/default.jpg') ?>" alt="<?= $user['name'] ?>" class="user-image">
+                                        <?php endif; ?>
+                                        <span class="user-name"><?= $user['name'] ?></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                        <a class="dropdown-item" href="<?= base_url('dashboard/profile') ?>"><i class="fas fa-user"></i> Profile</a>
+                                        <a class="dropdown-item" href="<?= base_url('dashboard/change_password') ?>"><i class="fas fa-lock"></i> Change Password</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Dashboard Stats -->
@@ -46,7 +88,7 @@
                                 </div>
                                 <div class="stat-card-info">
                                     <h5 class="stat-card-title">Enrolled Courses</h5>
-                                    <p class="stat-card-value"><?= count($enrolled_courses) ?></p>
+                                    <p class="stat-card-value"><?= isset($enrolled_courses) && is_array($enrolled_courses) ? count($enrolled_courses) : 0 ?></p>
                                 </div>
                             </div>
                         </div>
@@ -62,9 +104,11 @@
                                     <p class="stat-card-value">
                                         <?php 
                                         $completed_count = 0;
-                                        foreach ($course_progress as $progress) {
-                                            if ($progress['progress'] == 100) {
-                                                $completed_count++;
+                                        if (isset($course_progress) && is_array($course_progress)) {
+                                            foreach ($course_progress as $progress) {
+                                                if (isset($progress['progress']) && $progress['progress'] == 100) {
+                                                    $completed_count++;
+                                                }
                                             }
                                         }
                                         echo $completed_count;
@@ -82,7 +126,7 @@
                                 </div>
                                 <div class="stat-card-info">
                                     <h5 class="stat-card-title">Certificates</h5>
-                                    <p class="stat-card-value"><?= count($certificates) ?></p>
+                                    <p class="stat-card-value"><?= isset($certificates) && is_array($certificates) ? count($certificates) : 0 ?></p>
                                 </div>
                             </div>
                         </div>
@@ -105,26 +149,28 @@
                                 <div class="progress-card">
                                     <div class="row align-items-center">
                                         <div class="col-md-8">
-                                            <h5 class="progress-title"><a href="<?= base_url('course/view/'.$course['id']) ?>"><?= $course['title'] ?></a></h5>
+                                            <h5 class="progress-title"><a href="<?= base_url('course/view/'.@$course['id']) ?>"><?= @$course['title'] ?></a></h5>
                                             <div class="progress">
                                                 <?php 
                                                 $progress_value = 0;
-                                                foreach ($course_progress as $progress) {
-                                                    if ($progress['course_id'] == $course['id']) {
-                                                        $progress_value = $progress['progress'];
-                                                        break;
+                                                if (isset($course_progress) && is_array($course_progress)) {
+                                                    foreach ($course_progress as $progress) {
+                                                        if (isset($progress['course_id']) && isset($course['id']) && $progress['course_id'] == $course['id']) {
+                                                            $progress_value = $progress['progress'];
+                                                            break;
+                                                        }
                                                     }
                                                 }
                                                 ?>
                                                 <div class="progress-bar" role="progressbar" style="width: <?= $progress_value ?>%;" aria-valuenow="<?= $progress_value ?>" aria-valuemin="0" aria-valuemax="100"><?= $progress_value ?>%</div>
                                             </div>
                                             <div class="progress-meta">
-                                                <span class="instructor"><i class="fas fa-user"></i> <?= $course['instructor_name'] ?></span>
-                                                <span class="category"><i class="fas fa-tag"></i> <?= $course['category_name'] ?></span>
+                                                <span class="instructor"><i class="fas fa-user"></i> <?= isset($course['instructor_name']) ? $course['instructor_name'] : 'Unknown Instructor' ?></span>
+                                                <span class="category"><i class="fas fa-tag"></i> <?= isset($course['category_name']) ? $course['category_name'] : 'Uncategorized' ?></span>
                                             </div>
                                         </div>
                                         <div class="col-md-4 text-center text-md-right">
-                                            <a href="<?= base_url('course/learn/'.$course['id']) ?>" class="btn btn-primary">Continue Learning</a>
+                                            <a href="<?= base_url('course/learn/'.@$course['id']) ?>" class="btn btn-primary">Continue Learning</a>
                                         </div>
                                     </div>
                                 </div>
@@ -232,36 +278,36 @@
                                         <div class="course-card">
                                             <div class="card">
                                                 <div class="course-image">
-                                                    <img src="<?= base_url('assets/images/courses/'.$course['image']) ?>" class="card-img-top" alt="<?= $course['title'] ?>">
+                                                    <img src="<?= base_url('assets/images/courses/'.@$course['image']) ?>" class="card-img-top" alt="<?= @$course['title'] ?>">
                                                     <div class="course-price">
-                                                        <?php if ($course['price'] == 0): ?>
+                                                        <?php if (isset($course['price']) && $course['price'] == 0): ?>
                                                             <span class="badge badge-success">Free</span>
                                                         <?php else: ?>
-                                                            <span class="badge badge-primary">$<?= number_format($course['price'], 2) ?></span>
+                                                            <span class="badge badge-primary">$<?= isset($course['price']) ? number_format($course['price'], 2) : '0.00' ?></span>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="course-category">
-                                                        <span class="badge badge-light"><?= $course['category_name'] ?></span>
+                                                        <span class="badge badge-light"><?= isset($course['category_name']) ? $course['category_name'] : 'Uncategorized' ?></span>
                                                     </div>
-                                                    <h5 class="card-title"><a href="<?= base_url('course/view/'.$course['id']) ?>"><?= $course['title'] ?></a></h5>
+                                                    <h5 class="card-title"><a href="<?= base_url('course/view/'.@$course['id']) ?>"><?= @$course['title'] ?></a></h5>
                                                     <div class="course-meta">
-                                                        <span><i class="fas fa-user"></i> <?= $course['instructor_name'] ?></span>
+                                                        <span><i class="fas fa-user"></i> <?= isset($course['instructor_name']) ? $course['instructor_name'] : 'Unknown Instructor' ?></span>
                                                     </div>
                                                     <div class="course-rating">
                                                         <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                            <?php if ($i <= $course['rating']): ?>
+                                                            <?php if (isset($course['rating']) && $i <= $course['rating']): ?>
                                                                 <i class="fas fa-star"></i>
-                                                            <?php elseif ($i - 0.5 <= $course['rating']): ?>
+                                                            <?php elseif (isset($course['rating']) && $i - 0.5 <= $course['rating']): ?>
                                                                 <i class="fas fa-star-half-alt"></i>
                                                             <?php else: ?>
                                                                 <i class="far fa-star"></i>
                                                             <?php endif; ?>
                                                         <?php endfor; ?>
-                                                        <span>(<?= $course['review_count'] ?>)</span>
+                                                        <span>(<?= isset($course['review_count']) ? $course['review_count'] : '0' ?>)</span>
                                                     </div>
-                                                    <a href="<?= base_url('course/view/'.$course['id']) ?>" class="btn btn-outline-primary btn-sm mt-2">View Course</a>
+                                                    <a href="<?= base_url('course/view/'.@$course['id']) ?>" class="btn btn-outline-primary btn-sm mt-2">View Course</a>
                                                 </div>
                                             </div>
                                         </div>

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends CI_Controller {
+class Dashboard extends Auth_Controller {
     
     public function __construct() {
         parent::__construct();
@@ -9,21 +9,11 @@ class Dashboard extends CI_Controller {
         $this->load->model('Course_model');
         $this->load->model('Category_model');
         $this->load->helper('time');
-        
-        // Ensure session is started
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        
-        // Check if user is logged in using native PHP session
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== TRUE) {
-            redirect('auth/login?error=' . urlencode('Please login to access the dashboard'));
-        }
     }
     
     public function index() {
         // Determine user role and redirect to appropriate dashboard
-        $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+        $role = $this->session->userdata('role');
         
         if ($role == 'admin') {
             redirect('dashboard/admin');
@@ -95,8 +85,9 @@ class Dashboard extends CI_Controller {
     }
     
     public function student() {
-        $data['title'] = 'Student D	ashboard';
+        $data['title'] = 'Student Dashboard';
         $user_id = $_SESSION['user_id'];
+        
         // Get user data
         $data['user'] = $this->User_model->get_user_by_id($user_id);
         
@@ -111,12 +102,41 @@ class Dashboard extends CI_Controller {
             ];
         }
         
+        // Initialize data arrays to prevent undefined variable errors
+        $data['enrolled_courses'] = [];
+        $data['recommended_courses'] = [];
+        $data['course_progress'] = [];
+        $data['upcoming_quizzes'] = [];
+        $data['recent_activities'] = [];
+        $data['certificates'] = [];
+        
         try {
             // Get enrolled courses
             $data['enrolled_courses'] = $this->Course_model->get_enrolled_courses($user_id);
+            
+            // Add debug info
+            log_message('debug', 'Student dashboard: Retrieved ' . count($data['enrolled_courses']) . ' enrolled courses');
         } catch (Exception $e) {
             $data['enrolled_courses'] = [];
-            $data['error_courses'] = $e->getMessage();
+            $data['error_courses'] = 'Error loading enrolled courses: ' . $e->getMessage();
+            log_message('error', 'Student dashboard: ' . $e->getMessage());
+        }
+        
+        try {
+            // Get course progress (simplified - in a real app would calculate this)
+            $data['course_progress'] = [];
+            
+            // Just as a placeholder, set some random progress for each course
+            foreach ($data['enrolled_courses'] as $course) {
+                $data['course_progress'][] = [
+                    'course_id' => $course['id'],
+                    'progress' => rand(0, 100)
+                ];
+            }
+        } catch (Exception $e) {
+            $data['course_progress'] = [];
+            $data['error_progress'] = 'Error loading course progress: ' . $e->getMessage();
+            log_message('error', 'Student dashboard progress: ' . $e->getMessage());
         }
         
         try {
@@ -124,7 +144,8 @@ class Dashboard extends CI_Controller {
             $data['categories'] = $this->Category_model->get_active_categories();
         } catch (Exception $e) {
             $data['categories'] = [];
-            $data['error_categories'] = $e->getMessage();
+            $data['error_categories'] = 'Error loading categories: ' . $e->getMessage();
+            log_message('error', 'Student dashboard categories: ' . $e->getMessage());
         }
         
         // Load the view with proper templates

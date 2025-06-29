@@ -287,4 +287,14 @@ class Discussion extends Auth_Controller {
         
         redirect('discussion/view/' . $discussion_id);
     }
+    
+    /**
+     * View all discussions for a specific course
+     * 
+     * @param int $course_id
+     */
+    public function course($course_id) {
+        // Redirect to index method with course_id
+        redirect('discussion/index/' . $course_id);
+    }
 }

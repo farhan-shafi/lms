@@ -75,10 +75,32 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
     <!-- Custom JS -->
     <script src="<?= base_url('assets/js/main.js') ?>"></script>
     <script src="<?= base_url('assets/js/ui-interactions.js') ?>"></script>
     <script src="<?= base_url('assets/js/theme-customizer.js') ?>"></script>
+    <script src="<?= base_url('assets/js/dashboard-interactions.js') ?>"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Toggle sidebar on mobile
+        $('.sidebar-toggle').on('click', function() {
+            $('.sidebar').toggleClass('show');
+        });
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+    </script>
     
     <?php if(isset($additional_js)): ?>
         <?= $additional_js ?>

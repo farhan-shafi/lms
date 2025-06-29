@@ -20,6 +20,16 @@ class User_model extends CI_Model {
     }
     
     /**
+     * Get user (alias for get_user_by_id)
+     * 
+     * @param int $id
+     * @return array
+     */
+    public function get_user($id) {
+        return $this->get_user_by_id($id);
+    }
+    
+    /**
      * Update user profile
      * 
      * @param int $id
