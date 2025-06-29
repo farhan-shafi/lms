@@ -85,9 +85,8 @@ class Dashboard extends Auth_Controller {
     }
     
     public function student() {
-        $data['title'] = 'Student Dashboard';
+        $data['title'] = 'Student D	ashboard';
         $user_id = $_SESSION['user_id'];
-        
         // Get user data
         $data['user'] = $this->User_model->get_user_by_id($user_id);
         
@@ -102,41 +101,12 @@ class Dashboard extends Auth_Controller {
             ];
         }
         
-        // Initialize data arrays to prevent undefined variable errors
-        $data['enrolled_courses'] = [];
-        $data['recommended_courses'] = [];
-        $data['course_progress'] = [];
-        $data['upcoming_quizzes'] = [];
-        $data['recent_activities'] = [];
-        $data['certificates'] = [];
-        
         try {
             // Get enrolled courses
             $data['enrolled_courses'] = $this->Course_model->get_enrolled_courses($user_id);
-            
-            // Add debug info
-            log_message('debug', 'Student dashboard: Retrieved ' . count($data['enrolled_courses']) . ' enrolled courses');
         } catch (Exception $e) {
             $data['enrolled_courses'] = [];
-            $data['error_courses'] = 'Error loading enrolled courses: ' . $e->getMessage();
-            log_message('error', 'Student dashboard: ' . $e->getMessage());
-        }
-        
-        try {
-            // Get course progress (simplified - in a real app would calculate this)
-            $data['course_progress'] = [];
-            
-            // Just as a placeholder, set some random progress for each course
-            foreach ($data['enrolled_courses'] as $course) {
-                $data['course_progress'][] = [
-                    'course_id' => $course['id'],
-                    'progress' => rand(0, 100)
-                ];
-            }
-        } catch (Exception $e) {
-            $data['course_progress'] = [];
-            $data['error_progress'] = 'Error loading course progress: ' . $e->getMessage();
-            log_message('error', 'Student dashboard progress: ' . $e->getMessage());
+            $data['error_courses'] = $e->getMessage();
         }
         
         try {
@@ -144,8 +114,7 @@ class Dashboard extends Auth_Controller {
             $data['categories'] = $this->Category_model->get_active_categories();
         } catch (Exception $e) {
             $data['categories'] = [];
-            $data['error_categories'] = 'Error loading categories: ' . $e->getMessage();
-            log_message('error', 'Student dashboard categories: ' . $e->getMessage());
+            $data['error_categories'] = $e->getMessage();
         }
         
         // Load the view with proper templates

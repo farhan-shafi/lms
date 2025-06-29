@@ -94,7 +94,7 @@
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="avatar-sm me-2">
                                     <?php
-                                    $profile_image = $this->session->userdata('profile_image') ?? 'default.jpg';
+                                    $profile_image = $this->session->userdata('profile_image') ?? 'placeholder.png';
                                     $username = $this->session->userdata('name') ?? 'User';
                                     ?>
                                     <img src="<?= base_url('assets/images/profiles/' . $profile_image) ?>" alt="<?= $username ?>" class="rounded-circle img-fluid">

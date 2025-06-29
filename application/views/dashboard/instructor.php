@@ -20,26 +20,7 @@
                             <h1 class="admin-title">Instructor Dashboard</h1>
                             <p class="admin-subtitle">Welcome back, <?= $user['name'] ?>!</p>
                         </div>
-                        <div class="col-md-6 text-right">
-                            <div class="admin-user-dropdown">
-                                <div class="dropdown">
-                                    <button class="btn dropdown-toggle" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <?php if ($user['profile_image'] && file_exists('./assets/images/profiles/'.$user['profile_image'])): ?>
-                                            <img src="<?= base_url('assets/images/profiles/'.$user['profile_image']) ?>" alt="<?= $user['name'] ?>" class="user-image">
-                                        <?php else: ?>
-                                            <img src="<?= base_url('assets/images/profiles/default.jpg') ?>" alt="<?= $user['name'] ?>" class="user-image">
-                                        <?php endif; ?>
-                                        <span class="user-name"><?= $user['name'] ?></span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                        <a class="dropdown-item" href="<?= base_url('dashboard/profile') ?>"><i class="fas fa-user"></i> Profile</a>
-                                        <a class="dropdown-item" href="<?= base_url('dashboard/change_password') ?>"><i class="fas fa-lock"></i> Change Password</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                      
                     </div>
                 </div>
                 
