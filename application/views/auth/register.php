@@ -7,20 +7,20 @@
                 </div>
                 <div class="card-body">
                     <!-- Show errors if any -->
-                    <?php if(isset($_GET['error'])): ?>
+                    <?php if($this->session->flashdata('error')): ?>
                     <div class="alert alert-danger">
-                        <?= htmlspecialchars($_GET['error']) ?>
+                        <?= $this->session->flashdata('error') ?>
                     </div>
                     <?php endif; ?>
                     
                     <!-- Show success messages if any -->
-                    <?php if(isset($_GET['success'])): ?>
+                    <?php if($this->session->flashdata('success')): ?>
                     <div class="alert alert-success">
-                        <?= htmlspecialchars($_GET['success']) ?>
+                        <?= $this->session->flashdata('success') ?>
                     </div>
                     <?php endif; ?>
                     
-                    <form action="/lms/index.php/auth/register_process" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('auth/register_process') ?>" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="firstname" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="firstname" name="firstname" required>
@@ -58,7 +58,7 @@
                         <button type="submit" class="btn btn-primary">Register</button>
                     </form>
                     <div class="mt-3 text-center">
-                        Already have an account? <a href="/lms/index.php/auth/login">Login here</a>
+                        Already have an account? <a href="<?= base_url('auth/login') ?>">Login here</a>
                     </div>
                 </div>
             </div>

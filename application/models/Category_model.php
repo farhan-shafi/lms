@@ -98,4 +98,19 @@ class Category_model extends CI_Model {
         $query = $this->db->get('categories');
         return $query->result_array();
     }
+    
+    /**
+     * Get categories with course count
+     * 
+     * @return array
+     */
+    public function get_categories_with_count() {
+        $this->db->select('categories.*, COUNT(courses.id) as course_count');
+        $this->db->from('categories');
+        $this->db->join('courses', 'courses.category_id = categories.id AND courses.status = "published"', 'left');
+        $this->db->group_by('categories.id');
+        $this->db->order_by('categories.name', 'ASC');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }

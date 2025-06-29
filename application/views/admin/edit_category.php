@@ -5,7 +5,26 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-2">
-                <?php $this->load->view('templates/admin_sidebar'); ?>
+                <div class="admin-sidebar">
+                    <div class="sidebar-header">
+                        <div class="admin-logo">
+                            <img src="<?= base_url('assets/images/logo.png') ?>" alt="LMS Logo" class="img-fluid">
+                        </div>
+                        <h4 class="admin-title">Admin Panel</h4>
+                    </div>
+                    <ul class="admin-menu">
+                        <li><a href="<?= base_url('dashboard/admin') ?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="<?= base_url('admin/courses') ?>"><i class="fas fa-book-open"></i> Courses</a></li>
+                        <li class="active"><a href="<?= base_url('admin/categories') ?>"><i class="fas fa-tags"></i> Categories</a></li>
+                        <li><a href="<?= base_url('admin/users') ?>"><i class="fas fa-users"></i> Users</a></li>
+                        <li><a href="<?= base_url('admin/instructors') ?>"><i class="fas fa-chalkboard-teacher"></i> Instructors</a></li>
+                        <li><a href="<?= base_url('admin/students') ?>"><i class="fas fa-user-graduate"></i> Students</a></li>
+                        <li><a href="<?= base_url('admin/enrollments') ?>"><i class="fas fa-user-check"></i> Enrollments</a></li>
+                        <li><a href="<?= base_url('admin/payments') ?>"><i class="fas fa-credit-card"></i> Payments</a></li>
+                        <li><a href="<?= base_url('admin/settings') ?>"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><a href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
             </div>
             
             <!-- Main Content -->
@@ -15,7 +34,6 @@
                     <div class="row align-items-center">
                         <div class="col-md-6">
                             <h1 class="admin-title"><?= $is_edit ? 'Edit Category' : 'Create Category' ?></h1>
-                            <p class="admin-subtitle"><?= $is_edit ? 'Update category information' : 'Add a new course category' ?></p>
                         </div>
                         <div class="col-md-6 text-right">
                             <a href="<?= base_url('admin/categories') ?>" class="btn btn-secondary">Back to Categories</a>
@@ -23,66 +41,61 @@
                     </div>
                 </div>
                 
-                <!-- Edit Category Form -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body">
-                        <?php if ($this->session->flashdata('error')): ?>
-                            <div class="alert alert-danger"><?= $this->session->flashdata('error') ?></div>
-                        <?php endif; ?>
-                        
-                        <?php if ($this->session->flashdata('success')): ?>
-                            <div class="alert alert-success"><?= $this->session->flashdata('success') ?></div>
-                        <?php endif; ?>
-                        
-                        <?php if (validation_errors()): ?>
-                            <div class="alert alert-danger"><?= validation_errors() ?></div>
-                        <?php endif; ?>
-                        
-                        <form action="<?= $is_edit ? base_url('admin/edit_category/' . $category['id']) : base_url('admin/edit_category') ?>" method="post" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Category Name</label>
-                                <input type="text" class="form-control" id="name" name="name" value="<?= set_value('name', $is_edit ? $category['name'] : '') ?>" required>
+                <!-- Category Form -->
+                <div class="admin-section">
+                    <div class="section-body">
+                        <form action="<?= base_url('admin/edit_category' . ($is_edit ? '/'.$category['id'] : '')) ?>" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">Category Name *</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="<?= set_value('name', $is_edit ? $category['name'] : '') ?>" required>
+                                        <?= form_error('name', '<small class="text-danger">', '</small>') ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="status">Status *</label>
+                                        <select class="form-control" id="status" name="status" required>
+                                            <option value="">Select Status</option>
+                                            <option value="active" <?= set_select('status', 'active', $is_edit ? $category['status'] == 'active' : TRUE) ?>>Active</option>
+                                            <option value="inactive" <?= set_select('status', 'inactive', $is_edit ? $category['status'] == 'inactive' : FALSE) ?>>Inactive</option>
+                                        </select>
+                                        <?= form_error('status', '<small class="text-danger">', '</small>') ?>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="3"><?= set_value('description', $is_edit ? $category['description'] : '') ?></textarea>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter category description..."><?= set_value('description', $is_edit ? $category['description'] : '') ?></textarea>
+                                        <?= form_error('description', '<small class="text-danger">', '</small>') ?>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="status" class="form-label">Status</label>
-                                        <select class="form-control" id="status" name="status" required>
-                                            <option value="active" <?= set_select('status', 'active', ($is_edit && isset($category['status']) && $category['status'] == 'active')) ?>>Active</option>
-                                            <option value="inactive" <?= set_select('status', 'inactive', ($is_edit && isset($category['status']) && $category['status'] == 'inactive')) ?>>Inactive</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="icon" class="form-label">Category Icon</label>
-                                        <input type="file" class="form-control" id="icon" name="icon" accept="image/*">
-                                        <?php if ($is_edit && isset($category['icon']) && !empty($category['icon'])): ?>
-                                            <div class="mt-2">
-                                                <img src="<?= base_url($category['icon']) ?>" alt="Current Icon" class="img-thumbnail" style="max-width: 100px;">
-                                                <small class="text-muted d-block">Current icon</small>
+                                    <div class="form-group">
+                                        <label for="icon">Category Icon</label>
+                                        <?php if ($is_edit && $category['icon']): ?>
+                                            <div class="mb-2">
+                                                <img src="<?= base_url('assets/images/categories/'.$category['icon']) ?>" alt="Current Icon" class="img-thumbnail" style="max-width: 100px;">
+                                                <small class="d-block text-muted">Current icon</small>
                                             </div>
                                         <?php endif; ?>
-                                        <small class="text-muted">Recommended size: 64x64px</small>
+                                        <input type="file" class="form-control-file" id="icon" name="icon" accept="image/*">
+                                        <small class="form-text text-muted">Upload a category icon (optional). Max size: 2MB. Supported formats: JPG, PNG, GIF, SVG</small>
                                     </div>
                                 </div>
                             </div>
                             
-                            <?php if ($is_edit): ?>
-                                <div class="mb-3">
-                                    <label class="form-label">Slug</label>
-                                    <input type="text" class="form-control" value="<?= $category['slug'] ?>" readonly disabled>
-                                    <small class="text-muted">Slug cannot be changed after creation</small>
-                                </div>
-                            <?php endif; ?>
-                            
-                            <button type="submit" class="btn btn-primary"><?= $is_edit ? 'Update Category' : 'Create Category' ?></button>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary"><?= $is_edit ? 'Update Category' : 'Create Category' ?></button>
+                                <a href="<?= base_url('admin/categories') ?>" class="btn btn-secondary">Cancel</a>
+                            </div>
                         </form>
                     </div>
                 </div>

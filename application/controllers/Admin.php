@@ -102,6 +102,69 @@ class Admin extends Admin_Controller {
     }
     
     /**
+     * Create new user
+     */
+    public function create_user() {
+        // Form validation
+        $this->form_validation->set_rules('name', 'Name', 'required|trim');
+        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[users.email]');
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[password]');
+        $this->form_validation->set_rules('role', 'Role', 'required|in_list[student,instructor,admin]');
+        $this->form_validation->set_rules('status', 'Status', 'required|in_list[active,inactive]');
+        
+        if ($this->form_validation->run() === TRUE) {
+            $user_data = [
+                'name' => $this->input->post('name'),
+                'email' => $this->input->post('email'),
+                'password' => password_hash($this->input->post('password'), PASSWORD_BCRYPT),
+                'role' => $this->input->post('role'),
+                'status' => $this->input->post('status'),
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+            
+            // Handle profile image upload if provided
+            if (!empty($_FILES['profile_image']['name'])) {
+                // Create profiles directory if it doesn't exist
+                $profile_dir = FCPATH . 'assets/images/profiles';
+                if (!is_dir($profile_dir)) {
+                    mkdir($profile_dir, 0755, true);
+                }
+                
+                // Set upload configuration
+                $config['upload_path'] = $profile_dir;
+                $config['allowed_types'] = 'gif|jpg|jpeg|png';
+                $config['max_size'] = 2048; // 2MB
+                $config['encrypt_name'] = TRUE; // For unique filenames
+                
+                $this->load->library('upload', $config);
+                
+                if ($this->upload->do_upload('profile_image')) {
+                    $upload_data = $this->upload->data();
+                    $user_data['profile_image'] = $upload_data['file_name'];
+                } else {
+                    $this->session->set_flashdata('error', 'Profile image upload failed: ' . $this->upload->display_errors('', ''));
+                }
+            }
+            
+            if ($this->User_model->register($user_data)) {
+                $this->session->set_flashdata('success', 'User created successfully');
+                redirect('admin/users');
+            } else {
+                $this->session->set_flashdata('error', 'Failed to create user');
+            }
+        }
+        
+        // Page metadata
+        $data['title'] = 'Create User';
+        
+        // Load views
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/create_user', $data);
+        $this->load->view('templates/footer');
+    }
+    
+    /**
      * Edit user
      */
     public function edit_user($user_id) {
@@ -148,7 +211,7 @@ class Admin extends Admin_Controller {
                 
                 if ($this->upload->do_upload('profile_image')) {
                     $upload_data = $this->upload->data();
-                    $update_data['profile_image'] = 'assets/images/profiles/' . $upload_data['file_name'];
+                    $update_data['profile_image'] = $upload_data['file_name'];
                 } else {
                     $this->session->set_flashdata('error', 'Profile image upload failed: ' . $this->upload->display_errors('', ''));
                 }

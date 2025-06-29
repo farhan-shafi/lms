@@ -275,31 +275,53 @@ class Progress_model extends CI_Model {
     }
     
     /**
-     * Reset progress for a specific item
+     * Reset progress for a user
      * 
      * @param int $user_id
-     * @param array $params Parameters to identify the progress record
-     * @return bool Success or failure
+     * @param array $params Reset parameters
+     * @return bool
      */
     public function reset_progress($user_id, $params) {
-        $this->db->where('user_id', $user_id);
+        $conditions = ['user_id' => $user_id];
         
         if (isset($params['course_id'])) {
-            $this->db->where('course_id', $params['course_id']);
+            $conditions['course_id'] = $params['course_id'];
         }
         
         if (isset($params['module_id'])) {
-            $this->db->where('module_id', $params['module_id']);
+            $conditions['module_id'] = $params['module_id'];
         }
         
-        if (isset($params['lesson_id'])) {
-            $this->db->where('lesson_id', $params['lesson_id']);
+        return $this->db->delete('progress_tracking', $conditions);
+    }
+    
+    /**
+     * Get course progress for all enrolled courses of a user
+     * 
+     * @param int $user_id
+     * @return array
+     */
+    public function get_all_course_progress($user_id) {
+        // Get all enrolled courses
+        $this->db->select('e.course_id');
+        $this->db->from('enrollments e');
+        $this->db->where('e.user_id', $user_id);
+        $enrolled_courses = $this->db->get()->result_array();
+        
+        $progress_data = [];
+        
+        foreach ($enrolled_courses as $enrollment) {
+            $course_id = $enrollment['course_id'];
+            $progress = $this->get_course_progress($user_id, $course_id);
+            
+            $progress_data[] = [
+                'course_id' => $course_id,
+                'progress' => $progress['percentage'],
+                'total_items' => $progress['total_items'],
+                'completed_items' => $progress['completed_items']
+            ];
         }
         
-        if (isset($params['quiz_id'])) {
-            $this->db->where('quiz_id', $params['quiz_id']);
-        }
-        
-        return $this->db->delete('progress_tracking');
+        return $progress_data;
     }
 }

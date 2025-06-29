@@ -27,9 +27,9 @@ class Dashboard extends Auth_Controller {
     public function admin() {
         // Simple admin dashboard view for troubleshooting
         $data['title'] = 'Admin Dashboard';
-        $data['user_id'] = $_SESSION['user_id'];
-        $data['name'] = $_SESSION['name'];
-        $data['role'] = $_SESSION['role'];
+        $data['user_id'] = $this->session->userdata('user_id') ?: $_SESSION['user_id'] ?? null;
+        $data['name'] = $this->session->userdata('name') ?: $_SESSION['name'] ?? null;
+        $data['role'] = $this->session->userdata('role') ?: $_SESSION['role'] ?? null;
         
         try {
             $data['categories'] = $this->Category_model->get_active_categories();
@@ -46,7 +46,7 @@ class Dashboard extends Auth_Controller {
     
     public function instructor() {
         $data['title'] = 'Instructor Dashboard';
-        $user_id = $_SESSION['user_id'];
+        $user_id = $this->session->userdata('user_id') ?: $_SESSION['user_id'] ?? null;
         
         // Get user data
         $data['user'] = $this->User_model->get_user_by_id($user_id);
@@ -54,11 +54,11 @@ class Dashboard extends Auth_Controller {
         // If user data cannot be retrieved, fall back to session data
         if (!$data['user']) {
             $data['user'] = [
-                'id' => $_SESSION['user_id'],
-                'name' => $_SESSION['name'],
-                'email' => $_SESSION['email'],
-                'role' => $_SESSION['role'],
-                'profile_image' => null
+                'id' => $this->session->userdata('user_id') ?: $_SESSION['user_id'] ?? null,
+                'name' => $this->session->userdata('name') ?: $_SESSION['name'] ?? null,
+                'email' => $this->session->userdata('email') ?: $_SESSION['email'] ?? null,
+                'role' => $this->session->userdata('role') ?: $_SESSION['role'] ?? null,
+                'profile_image' => $this->session->userdata('profile_image') ?: $_SESSION['profile_image'] ?? 'default.png'
             ];
         }
         
@@ -85,19 +85,25 @@ class Dashboard extends Auth_Controller {
     }
     
     public function student() {
-        $data['title'] = 'Student D	ashboard';
-        $user_id = $_SESSION['user_id'];
+        $data['title'] = 'Student Dashboard';
+        $user_id = $this->session->userdata('user_id') ?: $_SESSION['user_id'] ?? null;
+        
+        // Load additional models
+        $this->load->model('Progress_model');
+        $this->load->model('Quiz_model');
+        $this->load->model('Certificate_model');
+        
         // Get user data
         $data['user'] = $this->User_model->get_user_by_id($user_id);
         
         // If user data cannot be retrieved, fall back to session data
         if (!$data['user']) {
             $data['user'] = [
-                'id' => $_SESSION['user_id'],
-                'name' => $_SESSION['name'],
-                'email' => $_SESSION['email'],
-                'role' => $_SESSION['role'],
-                'profile_image' => null
+                'id' => $this->session->userdata('user_id') ?: $_SESSION['user_id'] ?? null,
+                'name' => $this->session->userdata('name') ?: $_SESSION['name'] ?? null,
+                'email' => $this->session->userdata('email') ?: $_SESSION['email'] ?? null,
+                'role' => $this->session->userdata('role') ?: $_SESSION['role'] ?? null,
+                'profile_image' => $this->session->userdata('profile_image') ?: $_SESSION['profile_image'] ?? 'default.png'
             ];
         }
         
@@ -107,6 +113,46 @@ class Dashboard extends Auth_Controller {
         } catch (Exception $e) {
             $data['enrolled_courses'] = [];
             $data['error_courses'] = $e->getMessage();
+        }
+        
+        try {
+            // Get course progress for all enrolled courses
+            $data['course_progress'] = $this->Progress_model->get_all_course_progress($user_id);
+        } catch (Exception $e) {
+            $data['course_progress'] = [];
+            $data['error_progress'] = $e->getMessage();
+        }
+        
+        try {
+            // Get upcoming quizzes
+            $data['upcoming_quizzes'] = $this->Quiz_model->get_upcoming_quizzes($user_id, 5);
+        } catch (Exception $e) {
+            $data['upcoming_quizzes'] = [];
+            $data['error_quizzes'] = $e->getMessage();
+        }
+        
+        try {
+            // Get recent activities
+            $data['recent_activities'] = $this->Course_model->get_recent_activities($user_id, 10);
+        } catch (Exception $e) {
+            $data['recent_activities'] = [];
+            $data['error_activities'] = $e->getMessage();
+        }
+        
+        try {
+            // Get recommended courses
+            $data['recommended_courses'] = $this->Course_model->get_recommended_courses($user_id, 6);
+        } catch (Exception $e) {
+            $data['recommended_courses'] = [];
+            $data['error_recommended'] = $e->getMessage();
+        }
+        
+        try {
+            // Get user certificates
+            $data['certificates'] = $this->Certificate_model->get_user_certificates($user_id);
+        } catch (Exception $e) {
+            $data['certificates'] = [];
+            $data['error_certificates'] = $e->getMessage();
         }
         
         try {
@@ -126,7 +172,7 @@ class Dashboard extends Auth_Controller {
     // Helper methods for accessing course categories
     public function course_categories() {
         $data['title'] = 'Course Categories';
-        $user_id = $_SESSION['user_id'];
+        $user_id = $this->session->userdata('user_id') ?: $_SESSION['user_id'] ?? null;
         
         // Get user data
         $data['user'] = $this->User_model->get_user_by_id($user_id);
@@ -134,11 +180,11 @@ class Dashboard extends Auth_Controller {
         // If user data cannot be retrieved, fall back to session data
         if (!$data['user']) {
             $data['user'] = [
-                'id' => $_SESSION['user_id'],
-                'name' => $_SESSION['name'],
-                'email' => $_SESSION['email'],
-                'role' => $_SESSION['role'],
-                'profile_image' => null
+                'id' => $this->session->userdata('user_id') ?: $_SESSION['user_id'] ?? null,
+                'name' => $this->session->userdata('name') ?: $_SESSION['name'] ?? null,
+                'email' => $this->session->userdata('email') ?: $_SESSION['email'] ?? null,
+                'role' => $this->session->userdata('role') ?: $_SESSION['role'] ?? null,
+                'profile_image' => $this->session->userdata('profile_image') ?: $_SESSION['profile_image'] ?? 'default.png'
             ];
         }
         

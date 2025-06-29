@@ -355,4 +355,125 @@ class Course_model extends CI_Model {
         $query = $this->db->get('courses');
         return $query->result_array();
     }
+    
+    /**
+     * Get recommended courses for a user
+     * 
+     * @param int $user_id
+     * @param int $limit
+     * @return array
+     */
+    public function get_recommended_courses($user_id, $limit = 6) {
+        // Get user's enrolled course categories
+        $this->db->select('DISTINCT c.category_id');
+        $this->db->from('courses c');
+        $this->db->join('enrollments e', 'c.id = e.course_id');
+        $this->db->where('e.user_id', $user_id);
+        $enrolled_categories = $this->db->get()->result_array();
+        
+        $category_ids = array_column($enrolled_categories, 'category_id');
+        
+        if (empty($category_ids)) {
+            // If no enrolled courses, return popular courses
+            return $this->get_popular_courses($limit);
+        }
+        
+        // Get courses from user's preferred categories
+        $this->db->select('c.*, u.name as instructor_name, cat.name as category_name');
+        $this->db->from('courses c');
+        $this->db->join('users u', 'c.instructor_id = u.id', 'left');
+        $this->db->join('categories cat', 'c.category_id = cat.id', 'left');
+        $this->db->where('c.status', 'published');
+        $this->db->where_in('c.category_id', $category_ids);
+        
+        // Exclude already enrolled courses
+        $this->db->where('c.id NOT IN (
+            SELECT course_id FROM enrollments WHERE user_id = ' . $this->db->escape($user_id) . '
+        )', NULL, FALSE);
+        
+        $this->db->order_by('c.total_enrollments', 'DESC');
+        $this->db->order_by('c.average_rating', 'DESC');
+        $this->db->limit($limit);
+        
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    
+    /**
+     * Get recent activities for a user
+     * 
+     * @param int $user_id
+     * @param int $limit
+     * @return array
+     */
+    public function get_recent_activities($user_id, $limit = 10) {
+        $activities = [];
+        
+        // Get recent enrollments
+        $this->db->select('e.enrollment_date as created_at, c.title as course_title, "course_enrolled" as type');
+        $this->db->from('enrollments e');
+        $this->db->join('courses c', 'e.course_id = c.id');
+        $this->db->where('e.user_id', $user_id);
+        $this->db->order_by('e.enrollment_date', 'DESC');
+        $this->db->limit($limit);
+        $enrollments = $this->db->get()->result_array();
+        
+        foreach ($enrollments as $enrollment) {
+            $activities[] = [
+                'type' => $enrollment['type'],
+                'description' => 'Enrolled in "' . $enrollment['course_title'] . '"',
+                'created_at' => $enrollment['created_at']
+            ];
+        }
+        
+        // Get recent lesson completions
+        $this->db->select('pt.updated_at as created_at, l.title as lesson_title, c.title as course_title, "lesson_completed" as type');
+        $this->db->from('progress_tracking pt');
+        $this->db->join('lessons l', 'pt.lesson_id = l.id');
+        $this->db->join('modules m', 'l.module_id = m.id');
+        $this->db->join('courses c', 'm.course_id = c.id');
+        $this->db->where('pt.user_id', $user_id);
+        $this->db->where('pt.status', 'completed');
+        $this->db->where('pt.lesson_id IS NOT NULL');
+        $this->db->order_by('pt.updated_at', 'DESC');
+        $this->db->limit($limit);
+        $lesson_completions = $this->db->get()->result_array();
+        
+        foreach ($lesson_completions as $completion) {
+            $activities[] = [
+                'type' => $completion['type'],
+                'description' => 'Completed lesson "' . $completion['lesson_title'] . '" in "' . $completion['course_title'] . '"',
+                'created_at' => $completion['created_at']
+            ];
+        }
+        
+        // Get recent quiz completions
+        $this->db->select('pt.updated_at as created_at, q.title as quiz_title, c.title as course_title, pt.score, "quiz_completed" as type');
+        $this->db->from('progress_tracking pt');
+        $this->db->join('quizzes q', 'pt.quiz_id = q.id');
+        $this->db->join('modules m', 'q.module_id = m.id');
+        $this->db->join('courses c', 'm.course_id = c.id');
+        $this->db->where('pt.user_id', $user_id);
+        $this->db->where('pt.status', 'completed');
+        $this->db->where('pt.quiz_id IS NOT NULL');
+        $this->db->order_by('pt.updated_at', 'DESC');
+        $this->db->limit($limit);
+        $quiz_completions = $this->db->get()->result_array();
+        
+        foreach ($quiz_completions as $completion) {
+            $score_text = isset($completion['score']) ? ' with ' . round($completion['score'], 1) . '% score' : '';
+            $activities[] = [
+                'type' => $completion['type'],
+                'description' => 'Completed quiz "' . $completion['quiz_title'] . '" in "' . $completion['course_title'] . '"' . $score_text,
+                'created_at' => $completion['created_at']
+            ];
+        }
+        
+        // Sort all activities by date and return the most recent
+        usort($activities, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+        
+        return array_slice($activities, 0, $limit);
+    }
 }

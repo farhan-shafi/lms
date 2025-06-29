@@ -1,4 +1,3 @@
-
 <?php
 // Simple login form for debugging
 ?>
@@ -20,16 +19,16 @@
                     </div>
                     <div class="card-body">
                         <!-- Show errors if any -->
-                        <?php if(isset($_GET['error'])): ?>
+                        <?php if($this->session->flashdata('error')): ?>
                         <div class="alert alert-danger">
-                            <?= htmlspecialchars($_GET['error']) ?>
+                            <?= $this->session->flashdata('error') ?>
                         </div>
                         <?php endif; ?>
                         
                         <!-- Show success messages if any -->
-                        <?php if(isset($_GET['success'])): ?>
+                        <?php if($this->session->flashdata('success')): ?>
                         <div class="alert alert-success">
-                            <?= htmlspecialchars($_GET['success']) ?>
+                            <?= $this->session->flashdata('success') ?>
                         </div>
                         <?php endif; ?>
                         
@@ -39,8 +38,8 @@
                             <p>Use your email and password to log in after registration.</p>
                         </div>
                         
-                        <!-- Simple login form that bypasses CI's form processing -->
-                        <form action="/lms/index.php/auth/login_process" method="post">
+                        <!-- Simple login form -->
+                        <form action="<?= base_url('auth/login_process') ?>" method="post">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
@@ -52,7 +51,7 @@
                             <button type="submit" class="btn btn-primary">Login</button>
                         </form>
                         <div class="mt-3 text-center">
-                            Don't have an account? <a href="/lms/index.php/auth/register">Register here</a>
+                            Don't have an account? <a href="<?= base_url('auth/register') ?>">Register here</a>
                         </div>
                     </div>
                 </div>

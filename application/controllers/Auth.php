@@ -8,11 +8,9 @@ class Auth extends CI_Controller {
         // Load the User model
         $this->load->model('User_model');
         $this->load->library('upload');
-        
-        // Ensure session is started
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        $this->load->library('session');
+        $this->load->library('form_validation');
+        $this->load->helper('url');
     }
     
     public function index() {
@@ -24,13 +22,14 @@ class Auth extends CI_Controller {
     }
     
     public function login_process() {
-        // Get form data directly from $_POST
-        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        // Get form data using CodeIgniter's input class
+        $email = $this->input->post('email');
+        $password = $this->input->post('password');
         
         // Basic validation
         if (empty($email) || empty($password)) {
-            redirect('auth/login?error=' . urlencode('Please enter both email and password'));
+            $this->session->set_flashdata('error', 'Please enter both email and password');
+            redirect('auth/login');
             return;
         }
         
@@ -38,18 +37,28 @@ class Auth extends CI_Controller {
         $user = $this->User_model->verify_login($email, $password);
         
         if ($user) {
-            // Set session data from database user
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['logged_in'] = TRUE;
+            // Set session data using both methods for compatibility
+            $session_data = [
+                'user_id' => $user['id'],
+                'role' => $user['role'],
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'profile_image' => $user['profile_image'] ?? 'default.png',
+                'logged_in' => TRUE
+            ];
+            
+            // Set CodeIgniter session
+            $this->session->set_userdata($session_data);
+            
+            // Also set PHP session for compatibility
+            $_SESSION = $session_data;
             
             // Redirect to dashboard
             redirect('dashboard');
         } else {
             // Invalid credentials
-            redirect('auth/login?error=' . urlencode('Invalid email or password'));
+            $this->session->set_flashdata('error', 'Invalid email or password');
+            redirect('auth/login');
         }
     }
     
@@ -61,13 +70,13 @@ class Auth extends CI_Controller {
     }
     
     public function register_process() {
-        // Get form data directly from $_POST
-        $firstname = isset($_POST['firstname']) ? trim($_POST['firstname']) : '';
-        $lastname = isset($_POST['lastname']) ? trim($_POST['lastname']) : '';
-        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
-        $confirmpassword = isset($_POST['confirmpassword']) ? $_POST['confirmpassword'] : '';
-        $role = isset($_POST['role']) ? $_POST['role'] : 'student';
+        // Get form data using CodeIgniter's input class
+        $firstname = $this->input->post('firstname');
+        $lastname = $this->input->post('lastname');
+        $email = $this->input->post('email');
+        $password = $this->input->post('password');
+        $confirmpassword = $this->input->post('confirmpassword');
+        $role = $this->input->post('role') ?: 'student';
         
         // Basic validation
         $errors = [];
@@ -105,7 +114,8 @@ class Auth extends CI_Controller {
         // If there are validation errors, redirect back with error message
         if (!empty($errors)) {
             $error_message = implode(', ', $errors);
-            redirect('auth/register?error=' . urlencode($error_message));
+            $this->session->set_flashdata('error', $error_message);
+            redirect('auth/register');
             return;
         }
         
@@ -128,7 +138,7 @@ class Auth extends CI_Controller {
             
             if ($this->upload->do_upload('profile_image')) {
                 $upload_data = $this->upload->data();
-                $profile_image = 'assets/images/profiles/' . $upload_data['file_name'];
+                $profile_image = $upload_data['file_name'];
             } else {
                 // If upload fails, add error message but continue registration
                 $errors[] = 'Profile image upload failed: ' . $this->upload->display_errors('', '');
@@ -141,34 +151,32 @@ class Auth extends CI_Controller {
             'email' => $email,
             'password' => $password,
             'role' => $role,
+            'profile_image' => $profile_image ?: 'default.png',
             'created_at' => date('Y-m-d H:i:s')
         ];
-        
-        // Add profile image path if uploaded
-        if (!empty($profile_image)) {
-            $user_data['profile_image'] = $profile_image;
-        }
         
         // Register the user
         $registered = $this->User_model->register($user_data);
         
         if ($registered) {
             // Registration successful
-            redirect('auth/login?success=' . urlencode('Registration successful. You can now log in.'));
+            $this->session->set_flashdata('success', 'Registration successful. You can now log in.');
+            redirect('auth/login');
         } else {
             // Registration failed
-            redirect('auth/register?error=' . urlencode('Registration failed. Please try again.'));
+            $this->session->set_flashdata('error', 'Registration failed. Please try again.');
+            redirect('auth/register');
         }
     }
     
     public function logout() {
-        // Clear session variables
-        $_SESSION = [];
-        
-        // Destroy session
+        // Clear both session types for compatibility
+        $this->session->sess_destroy();
+        $_SESSION = array();
         session_destroy();
         
         // Redirect to login page
-        redirect('auth/login?success=' . urlencode('You have been logged out successfully'));
+        $this->session->set_flashdata('success', 'You have been logged out successfully');
+        redirect('auth/login');
     }
 }

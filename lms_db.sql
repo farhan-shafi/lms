@@ -363,6 +363,67 @@ CREATE TABLE `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
+-- Table structure for table `payments`
+-- --------------------------------------------------------
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `currency` varchar(3) NOT NULL DEFAULT 'USD',
+  `payment_method` varchar(50) NOT NULL,
+  `transaction_id` varchar(255) DEFAULT NULL,
+  `status` enum('pending','completed','failed','refunded') NOT NULL DEFAULT 'pending',
+  `payment_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `course_id` (`course_id`),
+  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+-- Table structure for table `instructor_payouts`
+-- --------------------------------------------------------
+CREATE TABLE `instructor_payouts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `instructor_id` int(11) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `currency` varchar(3) NOT NULL DEFAULT 'USD',
+  `payout_method` varchar(50) NOT NULL,
+  `payout_details` text DEFAULT NULL,
+  `status` enum('pending','processed','completed','failed') NOT NULL DEFAULT 'pending',
+  `payout_date` timestamp NULL DEFAULT NULL,
+  `processed_date` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `instructor_id` (`instructor_id`),
+  CONSTRAINT `instructor_payouts_ibfk_1` FOREIGN KEY (`instructor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+-- Table structure for table `lesson_progress`
+-- --------------------------------------------------------
+CREATE TABLE `lesson_progress` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `lesson_id` int(11) NOT NULL,
+  `status` enum('not_started','in_progress','completed') NOT NULL DEFAULT 'not_started',
+  `time_spent` int(11) DEFAULT NULL COMMENT 'Time spent in seconds',
+  `completion_date` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_lesson` (`user_id`,`lesson_id`),
+  KEY `lesson_id` (`lesson_id`),
+  CONSTRAINT `lesson_progress_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `lesson_progress_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lessons` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
 -- Insert sample data - Categories
 -- --------------------------------------------------------
 INSERT INTO `categories` (`name`, `description`, `icon`, `slug`, `status`) VALUES
@@ -399,4 +460,19 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('secondary_color', '#2ecc71'),
 ('enable_dark_mode', '1'),
 ('show_course_rating', '1'),
-('default_timezone', 'UTC');
+('default_timezone', 'UTC'),
+('instructor_commission_rate', '70'),
+('payment_gateway', 'stripe'),
+('stripe_public_key', ''),
+('stripe_secret_key', ''),
+('paypal_client_id', ''),
+('paypal_secret', ''),
+('minimum_payout_amount', '50'),
+('auto_approve_courses', '0'),
+('require_course_approval', '1'),
+('max_file_upload_size', '2048'),
+('allowed_file_types', 'jpg,jpeg,png,gif,pdf,doc,docx,mp4,avi,mov'),
+('email_notifications', '1'),
+('welcome_email', '1'),
+('course_completion_email', '1'),
+('certificate_auto_generate', '1');
