@@ -5,29 +5,7 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-2">
-                <div class="admin-sidebar">
-                    <div class="sidebar-header">
-                        <div class="admin-logo">
-                            <img src="<?= base_url('assets/images/logo.png') ?>" alt="LMS Logo" class="img-fluid">
-                        </div>
-                        <h4 class="admin-title">Admin Panel</h4>
-                    </div>
-                    <ul class="admin-menu">
-                        <li><a href="<?= base_url('dashboard/admin') ?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                        <li><a href="<?= base_url('admin/courses') ?>"><i class="fas fa-book-open"></i> Courses</a></li>
-                        <li class="active"><a href="<?= base_url('admin/categories') ?>"><i class="fas fa-tags"></i> Categories</a></li>
-                        <li><a href="<?= base_url('admin/users') ?>"><i class="fas fa-users"></i> Users</a></li>
-                        <li><a href="<?= base_url('admin/instructors') ?>"><i class="fas fa-chalkboard-teacher"></i> Instructors</a></li>
-                        <li><a href="<?= base_url('admin/students') ?>"><i class="fas fa-user-graduate"></i> Students</a></li>
-                        <li><a href="<?= base_url('admin/enrollments') ?>"><i class="fas fa-user-check"></i> Enrollments</a></li>
-                        <li><a href="<?= base_url('admin/payments') ?>"><i class="fas fa-credit-card"></i> Payments</a></li>
-                        <li><a href="<?= base_url('admin/reviews') ?>"><i class="fas fa-star"></i> Reviews</a></li>
-                        <li><a href="<?= base_url('admin/reports') ?>"><i class="fas fa-chart-bar"></i> Reports</a></li>
-                        <li><a href="<?= base_url('admin/settings') ?>"><i class="fas fa-cog"></i> Settings</a></li>
-                        <li><a href="<?= base_url('dashboard/profile') ?>"><i class="fas fa-user"></i> My Profile</a></li>
-                        <li><a href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </div>
+                <?php $this->load->view('templates/admin_sidebar'); ?>
             </div>
             
             <!-- Main Content -->
@@ -39,7 +17,7 @@
                             <h1 class="admin-title">Manage Categories</h1>
                         </div>
                         <div class="col-md-6 text-right">
-                            <a href="<?= base_url('admin/categories/create') ?>" class="btn btn-primary">Create Category</a>
+                            <a href="<?= base_url('admin/edit_category') ?>" class="btn btn-primary">Create Category</a>
                         </div>
                     </div>
                 </div>
@@ -58,9 +36,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($categories as $category): ?>
+                                    <?php foreach ($categories as $key =>$category): ?>
                                         <tr>
-                                            <td><?= $category['id'] ?></td>
+                                            <td><?= $key + 1 ?></td>
                                             <td><?= $category['name'] ?></td>
                                             <td><?= $category['slug'] ?></td>
                                             <td>

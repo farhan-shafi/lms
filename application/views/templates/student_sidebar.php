@@ -3,6 +3,22 @@
 <div class="sidebar">
     <div class="sidebar-header">
         <h5>Student Dashboard</h5>
+        <!-- User Profile Image -->
+        <div class="user-profile text-center my-3">
+            <?php if(isset($_SESSION['user_id'])): ?>
+                <?php 
+                    // Get user details from database
+                    $CI =& get_instance();
+                    $CI->load->model('User_model');
+                    $user = $CI->User_model->get_user_by_id($_SESSION['user_id']);
+                    $profile_image = isset($user['profile_image']) && !empty($user['profile_image']) 
+                        ? base_url($user['profile_image']) 
+                        : base_url('assets/images/profiles/default.png');
+                ?>
+                <img src="<?= $profile_image ?>" alt="Profile" class="rounded-circle profile-image">
+                <p class="user-name mt-2"><?= $_SESSION['name'] ?></p>
+            <?php endif; ?>
+        </div>
     </div>
     <div class="sidebar-menu">
         <ul class="nav flex-column">

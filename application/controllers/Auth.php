@@ -7,6 +7,7 @@ class Auth extends CI_Controller {
         parent::__construct();
         // Load the User model
         $this->load->model('User_model');
+        $this->load->library('upload');
         
         // Ensure session is started
         if (session_status() == PHP_SESSION_NONE) {
@@ -53,6 +54,7 @@ class Auth extends CI_Controller {
     }
     
     public function register() {
+        $data = array(); // Initialize empty data array
 		$this->load->view('templates/header', $data);
 		$this->load->view('auth/register');
 		$this->load->view('templates/footer');
@@ -107,6 +109,32 @@ class Auth extends CI_Controller {
             return;
         }
         
+        // Process profile image upload if file is selected
+        $profile_image = '';
+        if (!empty($_FILES['profile_image']['name'])) {
+            // Create profiles directory if it doesn't exist
+            $profile_dir = FCPATH . 'assets/images/profiles';
+            if (!is_dir($profile_dir)) {
+                mkdir($profile_dir, 0755, true);
+            }
+            
+            // Set upload configuration
+            $config['upload_path'] = $profile_dir;
+            $config['allowed_types'] = 'gif|jpg|jpeg|png';
+            $config['max_size'] = 2048; // 2MB
+            $config['encrypt_name'] = TRUE; // For unique filenames
+            
+            $this->upload->initialize($config);
+            
+            if ($this->upload->do_upload('profile_image')) {
+                $upload_data = $this->upload->data();
+                $profile_image = 'assets/images/profiles/' . $upload_data['file_name'];
+            } else {
+                // If upload fails, add error message but continue registration
+                $errors[] = 'Profile image upload failed: ' . $this->upload->display_errors('', '');
+            }
+        }
+        
         // Prepare user data for registration
         $user_data = [
             'name' => $firstname . ' ' . $lastname,
@@ -115,6 +143,11 @@ class Auth extends CI_Controller {
             'role' => $role,
             'created_at' => date('Y-m-d H:i:s')
         ];
+        
+        // Add profile image path if uploaded
+        if (!empty($profile_image)) {
+            $user_data['profile_image'] = $profile_image;
+        }
         
         // Register the user
         $registered = $this->User_model->register($user_data);

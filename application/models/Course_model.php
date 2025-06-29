@@ -331,21 +331,16 @@ class Course_model extends CI_Model {
      * @return array
      */
     public function get_enrolled_courses($user_id) {
-		#TODO fix it later
-		// $this->db->select('c.*, e.enrollment_date, e.status as enrollment_status, e.last_accessed_date, e.completion_date, u.name as instructor_name, cat.name as category_name');
-		// $this->db->from('courses c');
-		// $this->db->join('enrollments e', 'c.id = e.course_id');
-		// $this->db->join('users u', 'c.instructor_id = u.id', 'left');
-		// $this->db->join('categories cat', 'c.category_id = cat.id', 'left');
-		// $this->db->where('e.instructor_id', $user_id);
-		// $this->db->order_by('e.enrollment_date', 'DESC');
-		// $query = $this->db->get();
+		$this->db->select('c.*, e.enrollment_date, e.status as enrollment_status, e.last_accessed_date, e.completion_date, u.name as instructor_name, cat.name as category_name');
+		$this->db->from('courses c');
+		$this->db->join('enrollments e', 'c.id = e.course_id');
+		$this->db->join('users u', 'c.instructor_id = u.id', 'left');
+		$this->db->join('categories cat', 'c.category_id = cat.id', 'left');
+		$this->db->where('e.user_id', $user_id);
+		$this->db->order_by('e.enrollment_date', 'DESC');
+		$query = $this->db->get();
 		
-		// return $query->result_array();
-		$this->db->where('instructor_id', $user_id);
-        $this->db->order_by('created_at', 'DESC');
-        $query = $this->db->get('courses');
-        return $query->result_array();
+		return $query->result_array();
     }
     
     /**

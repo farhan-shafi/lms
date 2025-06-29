@@ -20,7 +20,7 @@
                     </div>
                     <?php endif; ?>
                     
-                    <form action="/lms/index.php/auth/register_process" method="post">
+                    <form action="/lms/index.php/auth/register_process" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="firstname" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="firstname" name="firstname" required>
@@ -41,6 +41,11 @@
                         <div class="mb-3">
                             <label for="confirmpassword" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="profile_image" class="form-label">Profile Image</label>
+                            <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*">
+                            <small class="form-text text-muted">Upload a profile picture (optional).</small>
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Register As:</label>

@@ -18,9 +18,34 @@
                                 <i class="fas fa-bars"></i>
                             </button>
                             <h1 class="admin-title">Admin Dashboard</h1>
-                            <p class="admin-subtitle">Welcome back, <?= $user['name'] ?>!</p>
+                            <p class="admin-subtitle">Welcome back, <?= isset($user['name']) ? $user['name'] : $_SESSION['name'] ?>!</p>
                         </div>
-                      
+                        <div class="col-md-6 text-end">
+                            <!-- Flash messages -->
+                            <?php if($this->session->flashdata('success')): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <?= $this->session->flashdata('success') ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if($this->session->flashdata('error')): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <?= $this->session->flashdata('error') ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <!-- Action Buttons -->
+                            <div class="admin-action-buttons">
+                                <a href="<?= base_url('admin/edit_category') ?>" class="btn btn-success me-2">
+                                    <i class="fas fa-plus"></i> Create Category
+                                </a>
+                                <a href="<?= base_url('admin/edit_course') ?>" class="btn btn-info me-2">
+                                    <i class="fas fa-plus"></i> Create Course
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 

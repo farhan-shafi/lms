@@ -130,6 +130,30 @@ class Admin extends Admin_Controller {
                 $update_data['password'] = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
             }
             
+            // Handle profile image upload if provided
+            if (!empty($_FILES['profile_image']['name'])) {
+                // Create profiles directory if it doesn't exist
+                $profile_dir = FCPATH . 'assets/images/profiles';
+                if (!is_dir($profile_dir)) {
+                    mkdir($profile_dir, 0755, true);
+                }
+                
+                // Set upload configuration
+                $config['upload_path'] = $profile_dir;
+                $config['allowed_types'] = 'gif|jpg|jpeg|png';
+                $config['max_size'] = 2048; // 2MB
+                $config['encrypt_name'] = TRUE; // For unique filenames
+                
+                $this->load->library('upload', $config);
+                
+                if ($this->upload->do_upload('profile_image')) {
+                    $upload_data = $this->upload->data();
+                    $update_data['profile_image'] = 'assets/images/profiles/' . $upload_data['file_name'];
+                } else {
+                    $this->session->set_flashdata('error', 'Profile image upload failed: ' . $this->upload->display_errors('', ''));
+                }
+            }
+            
             if ($this->User_model->update_user($user_id, $update_data)) {
                 $this->session->set_flashdata('success', 'User updated successfully');
                 redirect('admin/users');
@@ -504,6 +528,114 @@ class Admin extends Admin_Controller {
         // Load views
         $this->load->view('templates/header', $data);
         $this->load->view('admin/enrollments', $data);
+        $this->load->view('templates/footer');
+    }
+
+    /**
+     * Add/Edit course
+     */
+    public function edit_course($course_id = NULL) {
+        // Check if editing or adding
+        $data['is_edit'] = ($course_id !== NULL);
+        
+        if ($data['is_edit']) {
+            // Check if course exists
+            $data['course'] = $this->Course_model->get_course_by_id($course_id);
+            if (!$data['course']) {
+                show_404();
+            }
+        }
+        
+        // Get all instructors for dropdown
+        $data['instructors'] = $this->User_model->get_users_by_role('instructor');
+        
+        // Get all categories for dropdown
+        $data['categories'] = $this->Category_model->get_active_categories();
+        
+        // Form validation
+        $this->form_validation->set_rules('title', 'Title', 'required|trim');
+        $this->form_validation->set_rules('short_description', 'Short Description', 'required|trim');
+        $this->form_validation->set_rules('description', 'Description', 'required|trim');
+        $this->form_validation->set_rules('instructor_id', 'Instructor', 'required|numeric');
+        $this->form_validation->set_rules('category_id', 'Category', 'required|numeric');
+        $this->form_validation->set_rules('level', 'Level', 'required|in_list[beginner,intermediate,advanced]');
+        $this->form_validation->set_rules('price', 'Price', 'required|numeric');
+        $this->form_validation->set_rules('status', 'Status', 'required|in_list[draft,published,pending]');
+        
+        if ($this->form_validation->run() === TRUE) {
+            $course_data = [
+                'title' => $this->input->post('title'),
+                'short_description' => $this->input->post('short_description'),
+                'description' => $this->input->post('description'),
+                'instructor_id' => $this->input->post('instructor_id'),
+                'category_id' => $this->input->post('category_id'),
+                'level' => $this->input->post('level'),
+                'price' => $this->input->post('price'),
+                'is_free' => $this->input->post('is_free') ? 1 : 0,
+                'status' => $this->input->post('status'),
+                'language' => $this->input->post('language'),
+                'duration' => $this->input->post('duration'),
+                'outcomes' => $this->input->post('outcomes'),
+                'requirements' => $this->input->post('requirements')
+            ];
+            
+            // Generate slug if not editing
+            if (!$data['is_edit']) {
+                $course_data['slug'] = url_title($course_data['title'], 'dash', TRUE);
+                $course_data['created_at'] = date('Y-m-d H:i:s');
+            } else {
+                $course_data['updated_at'] = date('Y-m-d H:i:s');
+            }
+            
+            // Process thumbnail upload if provided
+            if (!empty($_FILES['thumbnail']['name'])) {
+                // Create directory if it doesn't exist
+                $upload_path = './assets/images/courses/';
+                if (!is_dir($upload_path)) {
+                    mkdir($upload_path, 0755, true);
+                }
+                
+                $config['upload_path'] = $upload_path;
+                $config['allowed_types'] = 'gif|jpg|jpeg|png';
+                $config['max_size'] = 2048; // 2MB
+                $config['encrypt_name'] = TRUE;
+                
+                $this->load->library('upload', $config);
+                
+                if ($this->upload->do_upload('thumbnail')) {
+                    $upload_data = $this->upload->data();
+                    $course_data['thumbnail'] = 'assets/images/courses/' . $upload_data['file_name'];
+                } else {
+                    $this->session->set_flashdata('error', $this->upload->display_errors());
+                    redirect($data['is_edit'] ? 'admin/edit_course/'.$course_id : 'admin/edit_course');
+                }
+            }
+            
+            if ($data['is_edit']) {
+                // Update existing course
+                if ($this->Course_model->update_course($course_id, $course_data)) {
+                    $this->session->set_flashdata('success', 'Course updated successfully');
+                    redirect('admin/courses');
+                } else {
+                    $this->session->set_flashdata('error', 'Failed to update course');
+                }
+            } else {
+                // Create new course
+                if ($this->Course_model->create_course($course_data)) {
+                    $this->session->set_flashdata('success', 'Course created successfully');
+                    redirect('admin/courses');
+                } else {
+                    $this->session->set_flashdata('error', 'Failed to create course');
+                }
+            }
+        }
+        
+        // Page metadata
+        $data['title'] = $data['is_edit'] ? 'Edit Course' : 'Add Course';
+        
+        // Load views
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/edit_course', $data);
         $this->load->view('templates/footer');
     }
 }
